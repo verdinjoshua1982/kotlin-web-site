@@ -36,4 +36,4 @@ The new project opens.
 * [Understand the multiplatform project structure](multiplatform-discover-project.md). 
 * [Create and publish a multiplatform library – tutorial](multiplatform-library.md).
 * [Create your first cross-platform mobile application – tutorial](multiplatform-mobile-create-first-app.md).
-* [Create a full-stack web app with Kotlin Multiplatform – hands-on tutorial](https://play.kotlinlang.org/hands-on/Full%20Stack%20Web%20App%20with%20Kotlin%20Multiplatform/01_Introduction).
+* [Create a full-stack web app with Kotlin Multiplatform – tutorial](multiplatform-full-stack-app.md).

@@ -15,7 +15,7 @@
         <toc-element id="multiplatform.md"/>
         <toc-element id="server-overview.md" accepts-web-file-names="httpservlets.html"/>
         <toc-element id="android-overview.md"/>
-        <toc-element id="js-overview.md"/>
+        <toc-element id="js-overview.md" accepts-web-file-names="js-hands-ons.html"/>
         <toc-element id="native-overview.md"/>
         <toc-element id="data-science-overview.md"/>
         <toc-element id="competitive-programming.md"/>
@@ -106,6 +106,7 @@
             <toc-element id="multiplatform-get-started.md" accepts-web-file-names="building-mpp-with-gradle.html,intro-to-kotlin-mpp.html,mpp-intro.html,mpp-get-started.html,multiplatform-tutorials.html"/>
             <toc-element id="multiplatform-discover-project.md" accepts-web-file-names="mpp-discover-project.html"/>
             <toc-element id="multiplatform-set-up-targets.md" toc-title="Set up targets manually" accepts-web-file-names="mpp-set-up-targets.html"/>
+            <toc-element id="multiplatform-full-stack-app.md"/>
         </toc-element>
         <toc-element toc-title="Creating multiplatform libraries">
             <toc-element id="multiplatform-create-lib.md" accepts-web-file-names="mpp-create-lib.html"/>
@@ -177,7 +178,6 @@
                 <toc-element id="js-external-declarations-with-dukat.md"/>
             </toc-element>
             <toc-element id="js-samples.md"/>
-            <toc-element id="js-hands-ons.md"/>
         </toc-element>
 
         <toc-element toc-title="Native">

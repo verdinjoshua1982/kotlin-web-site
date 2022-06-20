@@ -3,7 +3,7 @@
 The purpose of the Kotlin Multiplatform Mobile technology is unifying the development of applications with common 
 logic for Android and iOS platforms. To make this possible, it uses a mobile-specific structure of
 [Kotlin Multiplatform](multiplatform.md) projects.
-This page describes the structure of a basic cross-platform mobile project. Note that this structure isn’t the only
+This page describes the structure of a basic cross-platform mobile project. Note that this structure isn't the only
 possible way to organize your project; however, we recommend it as a starting point.
 
 To view the complete structure of your mobile multiplatform project, switch the view from **Android** to **Project**.
@@ -23,7 +23,7 @@ Uses Gradle as the build system.
 This is the structure of a Multiplatform Mobile project that you create with a Project Wizard in IntelliJ IDEA or Android Studio.
 Real-life projects can have more complex structure; we consider these three components essential.
 
-Let’s take a closer look at the basic project and its components.
+Let's take a closer look at the basic project and its components.
 
 ## Root project
 
@@ -51,8 +51,8 @@ include ':androidApp'
 </tab>
 </tabs>
 
-The iOS application is produced from an Xcode project. It’s stored in a separate directory within the root project.
-Xcode uses its own build system; thus, the iOS application project isn’t connected with other parts of the Multiplatform Mobile project
+The iOS application is produced from an Xcode project. It's stored in a separate directory within the root project.
+Xcode uses its own build system; thus, the iOS application project isn't connected with other parts of the Multiplatform Mobile project
 via Gradle. Instead, it uses the shared module as an external artifact – framework. For details on integration between
 the shared module and the iOS application, see [iOS application](#ios-application).
 
@@ -117,7 +117,7 @@ The shared module contains the code that is common for Android and iOS applicati
 * `androidMain` stores Android-specific parts, including `actual` implementations
 * `iosMain` stores iOS-specific parts, including `actual` implementations
 
-Each source set has its own dependencies. Kotlin standard library is added automatically to all source sets, you don’t need to declare it in the build script.
+Each source set has its own dependencies. Kotlin standard library is added automatically to all source sets, you don't need to declare it in the build script.
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -254,7 +254,7 @@ plugins {
 </tab>
 </tabs>
 
-The configuration of Android library is stored in the `android {}` top-level block of the shared module’s build script:
+The configuration of Android library is stored in the `android {}` top-level block of the shared module's build script:
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -287,7 +287,7 @@ android {
 </tab>
 </tabs>
 
-It’s typical for any Android project. You can edit it to suit your needs.
+It's typical for any Android project. You can edit it to suit your needs.
 To learn more, see the [Android developer documentation](https://developer.android.com/studio/build#module-level).
 
 ### iOS framework
@@ -300,7 +300,7 @@ The framework is produced via the [Kotlin/Native](native-overview.md) compiler.
 The framework configuration is stored in the `ios {}` block of the build script within `kotlin {}`.
 It defines the output type `framework` and the string identifier `baseName` that is used to form the name
 of the output artifact. Its default value matches the Gradle module name. 
-For a real project, it’s likely that you’ll need a more complex configuration of the framework production.
+For a real project, it's likely that you'll need a more complex configuration of the framework production.
 For details, see [Multiplatform documentation](multiplatform-build-native-binaries.md).
 
 <tabs group="build-script">
@@ -434,7 +434,7 @@ dependencies {
 </tab>
 </tabs>
 
-Add your project’s Android-specific dependencies to this block.
+Add your project's Android-specific dependencies to this block.
 The build configuration of the Android application is located in the `android {}` top-level block of the build script:
 
 <tabs group="build-script">
@@ -482,7 +482,7 @@ android {
 </tab>
 </tabs>
 
-It’s typical for any Android project. You can edit it to suit your needs.
+It's typical for any Android project. You can edit it to suit your needs.
 To learn more, see the [Android developer documentation](https://developer.android.com/studio/build#module-level).
 
 ## iOS application

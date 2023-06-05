@@ -65,7 +65,7 @@
     "react-scrollbar-size": "5.0.0",
     "react-swipeable-views": "0.14.0",
     "resolve-url-loader": "4.0.0",
-    "rollup": "2.47.0",
+    "rollup": "3.21.7",
     "sass-loader": "12.1.0",
     "sha.js": "^2.4.11",
     "svgo": "2.7.0",

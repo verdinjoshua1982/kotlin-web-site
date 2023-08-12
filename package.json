@@ -7,8 +7,8 @@
     "defaults, not ie > 0, edge > 18"
   ],
   "dependencies": {
-    "@babel/core": "7.15.8",
-    "@babel/register": "7.15.3",
+    "@babel/core": "7.22.9",
+    "@babel/register": "7.22.5",
     "@jetbrains/babel-preset-jetbrains": "^2.3.1",
     "@jetbrains/kotlin-web-site-ui": "4.4.6",
     "@react-hook/resize-observer": "1.2.5",

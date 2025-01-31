@@ -172,7 +172,7 @@ so that it becomes a proper part of the tag tree.
 All this is defined in a package `com.example.html` that is imported at the top of the builder example above.
 In the last section you can read through the full definition of this package.
 
-## Scope control: `@DslMarker`
+## Scope control: @DslMarker
 
 When using DSLs, one might have come across the problem that too many functions can be called in the context. 
 You can call methods of every available implicit receiver inside a lambda and therefore get an inconsistent result, 
@@ -214,8 +214,9 @@ abstract class Tag(val name: String) { ... }
 
 You don't have to annotate the `HTML` or `Head` classes with `@HtmlTagMarker` because their superclass is already annotated:
 
-```
+```kotlin
 class HTML() : Tag("html") { ... }
+
 class Head() : Tag("head") { ... }
 ```
 
@@ -241,7 +242,7 @@ html {
 }
 ```
 
-## Full definition of the `com.example.html` package
+## Full definition of the com.example.html package
 
 This is how the package `com.example.html` is defined (only the elements used in the example above).
 It builds an HTML tree. It makes heavy use of [extension functions](extensions.md) and

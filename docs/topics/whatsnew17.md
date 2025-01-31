@@ -1,10 +1,10 @@
 [//]: # (title: What's new in Kotlin 1.7.0)
 
-<microformat>
+<tldr>
    <p>The IDE support for Kotlin 1.7.0 is available for IntelliJ IDEA 2021.2, 2021.3, and 2022.1.</p>
-</microformat>
+</tldr>
 
-_[Release date: 9 June 2022](releases.md#release-details)_
+_[Released: 9 June 2022](releases.md#release-details)_
 
 Kotlin 1.7.0 has been released. It unveils the Alpha version of the new Kotlin/JVM K2 compiler, stabilizes language
 features, and brings performance improvements for the JVM, JS, and Native platforms.
@@ -24,7 +24,7 @@ Here is a list of the major updates in this version:
 
 You can also find a short overview of the changes in this video:
 
-<video href="54WEfLKtCGk" title="What's new in Kotlin 1.7.0"/>
+<video src="https://www.youtube.com/v/54WEfLKtCGk" title="What's new in Kotlin 1.7.0"/>
 
 ## New Kotlin K2 compiler for the JVM in Alpha
 
@@ -53,7 +53,7 @@ Our benchmarks show some outstanding results on our internal projects:
 > The KLOC/s performance numbers stand for the number of thousands of lines of code that the compiler processes per
 > second.
 >
-> {type="tip"}
+> {style="tip"}
 
 You can check out the performance boost on your JVM projects and compare it with the results of the old compiler. To
 enable the Kotlin K2 compiler, use the following compiler option:
@@ -67,7 +67,7 @@ Please note that even issues with **State: Open** from this list are in fact fix
 
 The next Kotlin releases will improve the stability of the K2 compiler and provide more features, so stay tuned!
 
-If you face any performance issues with the Kotlin K2 compiler, please [report them to our issue tracker](https://youtrack.jetbrains.com/newIssue?project=KT&c=Type%20Performance%20Problem&c=Subsystems%20Frontend.%20IR).
+If you face any performance issues with the Kotlin K2 compiler, please [report them to our issue tracker](https://kotl.in/issue).
 
 ## Language
 
@@ -137,7 +137,7 @@ fun main() {
 
 > You can use the underscore operator in any position in the variables list to infer a type argument.
 >
-{type="note"}
+{style="note"}
 
 ### Stable builder inference
 
@@ -157,7 +157,7 @@ additional compiler configuration.
 
 Before 1.7.0, the opt-in feature itself required the argument `-opt-in=kotlin.RequiresOptIn` to avoid a warning. It no
 longer requires this; however, you can still use the compiler argument `-opt-in` to opt-in for other
-annotations, [module-wide](opt-in-requirements.md#module-wide-opt-in).
+annotations, [a module](opt-in-requirements.md#opt-in-a-module).
 
 ### Stable definitely non-nullable types
 
@@ -186,13 +186,13 @@ fun main() {
 ```
 
 Learn more about definitely non-nullable types
-in [this KEEP](https://github.com/Kotlin/KEEP/blob/c72601cf35c1e95a541bb4b230edb474a6d1d1a8/proposals/definitely-non-nullable-types.md).
+in [this KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/definitely-non-nullable-types.md).
 
 ## Kotlin/JVM
 
 This release brings performance improvements for the Kotlin/JVM compiler and a new compiler option. Additionally,
 callable references to functional interface constructors have become Stable. Note that since 1.7.0, the default target
-version for Kotlin/JVM compilations is now `1.8`.
+version for Kotlin/JVM compilations is `1.8`.
 
 * [Compiler performance optimizations](#compiler-performance-optimizations)
 * [New compiler option `-Xjdk-release`](#new-compiler-option-xjdk-release)
@@ -217,7 +217,7 @@ version 9 or higher.
 
 > This option is [not guaranteed](https://youtrack.jetbrains.com/issue/KT-29974) to be effective for each JDK distribution.
 >
-{type="note"}
+{style="note"}
 
 Please leave your feedback
 on [this YouTrack ticket](https://youtrack.jetbrains.com/issue/KT-29974/Add-a-compiler-option-Xjdk-release-similar-to-javac-s-release-to).
@@ -260,7 +260,7 @@ previous releases. It also brings performance improvements for the new memory ma
 > It may change incompatibly and require manual migration in the future.
 > We would appreciate your feedback in [YouTrack](https://youtrack.jetbrains.com/issue/KT-48525).
 >
-{type="note"}
+{style="note"}
 
 The new memory manager is still in Alpha, but it is on its way to becoming [Stable](components-stability.md).
 This release delivers significant performance improvements for the new memory manager, especially in garbage
@@ -290,7 +290,7 @@ artifacts for Native and other supported platforms.
 > Learn how to prepare your plugin for the update in
 > this [YouTrack issue](https://youtrack.jetbrains.com/issue/KT-48595).
 >
-{type="warning"}
+{style="warning"}
 
 ### Support for standalone Android executables
 
@@ -336,7 +336,7 @@ Starting with Kotlin 1.7.0, you no longer need to install the `cocoapods-generat
 CocoaPods in your projects.
 
 Previously, you needed to install both the CocoaPods dependency manager and the `cocoapods-generate` plugin to use
-CocoaPods, for example, to handle [iOS dependencies](multiplatform-mobile-ios-dependencies.md#with-cocoapods) in
+CocoaPods, for example, to handle [iOS dependencies](multiplatform-ios-dependencies.md#with-cocoapods) in
 Kotlin Multiplatform Mobile projects.
 
 Now setting up the CocoaPods integration is easier, and we've resolved the issue when `cocoapods-generate` couldn't be
@@ -360,7 +360,7 @@ kotlin.native.distribution.baseDownloadUrl=https://example.com
 > The downloader will append the native version and target OS to this base URL to ensure it downloads the actual
 > compiler distribution.
 >
-{type="note"}
+{style="note"}
 
 ## Kotlin/JS
 
@@ -525,7 +525,7 @@ compatibility, see [Compatibility modes](compatibility-modes.md).
 
 ### Access to annotations via reflection
 
-The `KAnnotatedElement.[findAnnotations()](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect.full/find-annotations.html)`
+The [`KAnnotatedElement.findAnnotations()`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect.full/find-annotations.html)
 extension function, which was first [introduced in 1.6.0](whatsnew16.md#repeatable-annotations-with-runtime-retention-for-1-8-jvm-target),
 is now [Stable](components-stability.md). This [reflection](reflection.md)
 function returns all annotations of a given type on an element, including individually applied and repeated annotations.
@@ -599,7 +599,7 @@ fun main() {
 > This optimization is only available if the time source from which the `TimeMark` is obtained is statically known to
 > be `TimeSource.Monotonic`.
 >
-{type="note"}
+{style="note"}
 
 ### New experimental extension functions for Java Optionals
 
@@ -737,7 +737,7 @@ This release introduces new build reports, support for Gradle plugin variants, n
 > Opt-in is required (see the details below). We encourage you to use it only for evaluation purposes, and we would
 > appreciate your feedback in [YouTrack](https://youtrack.jetbrains.com/issues/KT).
 >
-{type="warning"}
+{style="warning"}
 
 In Kotlin 1.7.0, we've reworked incremental compilation for cross-module changes. Now incremental compilation is also
 supported for changes made inside dependent non-Kotlin modules, and it is compatible with
@@ -757,7 +757,7 @@ kotlin.incremental.useClasspathSnapshot=true
 > The new approach to incremental compilation is currently available for the JVM backend in the Gradle build system
 > only.
 >
-{type="note"}
+{style="note"}
 
 Learn how the new approach to incremental compilation is implemented under the hood in
 [this blog post](https://blog.jetbrains.com/kotlin/2022/07/a-new-approach-to-incremental-compilation-in-kotlin/).
@@ -775,7 +775,7 @@ The Kotlin team is very grateful to [Ivan Gavrilovic](https://github.com/gavra0)
 > Opt-in is required (see details below). Use them only for evaluation purposes. We appreciate your feedback on them
 > in [YouTrack](https://youtrack.jetbrains.com/issues/KT).
 >
-{type="warning"}
+{style="warning"}
 
 Kotlin 1.7.0 introduces build reports that help track compiler performance. Reports contain the durations of different
 compilation phases and reasons why compilation couldn't be incremental.
@@ -799,10 +799,10 @@ The following values (and their combinations) are available:
   > The Gradle Enterprise plugin limits the number of custom values and their length. In big projects, some values could
   be lost.
   >
-  {type="note"}
+  {style="note"}
 
 * `http` posts build reports using HTTP(S). The POST method sends metrics in the JSON format. Data may change from version
-  to version. You can see the current version of the sent data in the [Kotlin repository](https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/plugin/statistics/CompileStatisticsData.kt).
+  to version. You can see the current version of the sent data in the [Kotlin repository](https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/report/data/GradleCompileStatisticsData.kt).
 
 There are two common cases that analyzing build reports for long-running compilations can help you resolve:
 
@@ -840,7 +840,7 @@ functionality.
 
 Currently, there are only two variants of the Kotlin Gradle plugin:
 
-* `main` for Gradle versions 6.7.1–6.9.2
+* `main` for Gradle versions 6.7.1–6.9.3
 * `gradle70` for Gradle versions 7.0 and higher
 
 In future Kotlin releases, we may add more.
@@ -853,7 +853,7 @@ string in the output starting with `Using Kotlin Gradle plugin`, for example, `U
 > * [ResolutionStrategy in pluginManagement is not working for plugins with multivariants](https://github.com/gradle/gradle/issues/20545)
 > * [Plugin variants are ignored when a plugin is added as the `buildSrc` common dependency](https://github.com/gradle/gradle/issues/20847)
 >
-{type="note"}
+{style="note"}
 
 Leave your feedback
 on [this YouTrack ticket](https://youtrack.jetbrains.com/issue/KT-49227/Support-Gradle-plugins-variants).
@@ -936,9 +936,9 @@ Enable the statistics in two steps:
   kapt.verbose=true
   ```
 
-> You can also enable verbose output via the [command line option `verbose`](kapt.md#using-in-cli).
+> You can also enable verbose output via the [command line option `verbose`](kapt.md#use-in-cli).
 >
-{type="note"}
+{style="note"}
 
 The statistics will appear in the logs with the `info` level. You'll see the `Annotation processor stats:` line followed
 by statistics on the execution time of each annotation processor. After these lines, there will be
@@ -1004,7 +1004,7 @@ We've completed the deprecation cycle for several compiler options:
 
 > The compiler arguments `-jdkHome` and `-no-stdlib` are still available.
 >
-{type="note"}
+{style="note"}
 
 #### Removal of deprecated plugins
 
@@ -1019,7 +1019,7 @@ the `KotlinCompilerPluginSupportPlugin` class instead.
 
 > The best practice is to use Kotlin plugins with versions 1.7.0 and higher throughout your project.
 >
-{type="tip"}
+{style="tip"}
 
 #### Removal of the deprecated coroutines DSL option and property
 
@@ -1061,19 +1061,19 @@ IntelliJ IDEA 2022.1 and Android Studio Chipmunk (212) automatically suggest upd
 
 > For IntelliJ IDEA 2022.2, and Android Studio Dolphin (213) or Android Studio Electric Eel (221), the Kotlin plugin 1.7.0 will be delivered with upcoming IntelliJ IDEA and Android Studios updates.
 > 
-{type="note"}
+{style="note"}
 
 The new command-line compiler is available for download on the [GitHub release page](https://github.com/JetBrains/kotlin/releases/tag/v1.7.0).
 
 ### Migrate existing or start a new project with Kotlin 1.7.0
 
 * To migrate existing projects to Kotlin 1.7.0, change the Kotlin version to `1.7.0` and reimport your Gradle or Maven
-project. [Learn how to update to Kotlin 1.7.0](releases.md#update-to-a-new-release).
+project. [Learn how to update to Kotlin 1.7.0](releases.md#update-to-a-new-kotlin-version).
 
-* To start a new project with Kotlin 1.7.0, update the Kotlin plugin and run the Project Wizard from **File** \| **New** \|
+* To start a new project with Kotlin 1.7.0, update the Kotlin plugin and run the Project Wizard from **File** | **New** |
 **Project**.
 
 ### Compatibility guide for Kotlin 1.7.0
 
-Kotlin 1.7.0 is a [feature release](kotlin-evolution.md#feature-releases-and-incremental-releases) and can, therefore, bring changes that are incompatible with your code written for earlier versions of the language.
+Kotlin 1.7.0 is a [feature release](kotlin-evolution-principles.md#language-and-tooling-releases) and can, therefore, bring changes that are incompatible with your code written for earlier versions of the language.
 Find the detailed list of such changes in the [Compatibility guide for Kotlin 1.7.0](compatibility-guide-17.md).

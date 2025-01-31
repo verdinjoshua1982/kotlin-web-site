@@ -41,27 +41,60 @@ To exclude the standard library from external libraries (notice that "star exclu
 
 To include `kotlin-osgi-bundle` to a Gradle project:
 
-```groovy
-compile "org.jetbrains.kotlin:kotlin-osgi-bundle:$kotlinVersion"
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
+```kotlin
+dependencies {
+    implementation(kotlin("osgi-bundle"))
+}
 ```
 
-To exclude default Kotlin libraries that comes as transitive dependencies you can use the following approach:
+</tab>
+<tab title="Groovy" group-key="groovy">
 
 ```groovy
 dependencies {
- compile (
-   [group: 'some.group.id', name: 'some.library', version: 'someversion'],
-   .....) {
-  exclude group: 'org.jetbrains.kotlin'
+    implementation "org.jetbrains.kotlin:kotlin-osgi-bundle:%kotlinVersion%"
 }
 ```
+
+</tab>
+</tabs>
+
+To exclude default Kotlin libraries that comes as transitive dependencies you can use the following approach:
+
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
+```kotlin
+dependencies {
+    implementation("some.group.id:some.library:someversion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
+}
+```
+
+</tab>
+<tab title="Groovy" group-key="groovy">
+
+```groovy
+dependencies {
+    implementation('some.group.id:some.library:someversion') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+}
+```
+
+</tab>
+</tabs>
 
 ## FAQ
 
 ### Why not just add required manifest options to all Kotlin libraries
 
 Even though it is the most preferred way to provide OSGi support, unfortunately it couldn't be done for now due to so called
-["package split" issue](http://wiki.osgi.org/wiki/Split_Packages) that couldn't be easily eliminated and such a big change is
+["package split" issue](https://docs.osgi.org/specification/osgi.core/7.0.0/framework.module.html#d0e5999) that couldn't be easily eliminated and such a big change is
 not planned for now. There is `Require-Bundle` feature but it is not the best option too and not recommended to use.
 So it was decided to make a separate artifact for OSGi.
 

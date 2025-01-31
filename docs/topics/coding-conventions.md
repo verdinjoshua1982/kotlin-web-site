@@ -34,18 +34,64 @@ files in `org.example.kotlin.network.socket` should be in the `network/socket` s
 >source root as the Java source files, and follow the same directory structure: each file should be stored in the 
 >directory corresponding to each package statement.
 >
-{type="note"}
+{style="note"}
 
 ### Source file names
 
 If a Kotlin file contains a single class or interface (potentially with related top-level declarations), its name should be the same
 as the name of the class, with the `.kt` extension appended. It applies to all types of classes and interfaces.
 If a file contains multiple classes, or only top-level declarations, choose a name describing what the file contains, and name the file accordingly.
-Use [upper camel case](https://en.wikipedia.org/wiki/Camel_case) with an uppercase first letter (also known as Pascal case),
-for example, `ProcessDeclarations.kt`.
+Use [upper camel case](https://en.wikipedia.org/wiki/Camel_case), where the first letter of each word is capitalized.
+For example, `ProcessDeclarations.kt`.
 
 The name of the file should describe what the code in the file does. Therefore, you should avoid using meaningless
 words such as `Util` in file names.
+
+#### Multiplatform projects
+
+In multiplatform projects, files with top-level declarations in platform-specific source sets should have a suffix
+associated with the name of the source set. For example:
+
+* **jvm**Main/kotlin/Platform.**jvm**.kt
+* **android**Main/kotlin/Platform.**android**.kt
+* **ios**Main/kotlin/Platform.**ios**.kt
+
+As for the common source set, files with top-level declarations should not have a suffix. For example, `commonMain/kotlin/Platform.kt`.
+
+##### Technical details {initial-collapse-state="collapsed" collapsible="true"}
+
+We recommend following this file naming scheme in multiplatform projects due to JVM limitations: it doesn't allow
+top-level members (functions, properties).
+
+To work around this, the Kotlin JVM compiler creates wrapper classes (so-called "file facades") that contain top-level
+member declarations. File facades have an internal name derived from the file name.
+
+In turn, JVM doesn't allow several classes with the same fully qualified name (FQN). This might lead to situations when
+a Kotlin project cannot be compiled to JVM:
+
+```none
+root
+|- commonMain/kotlin/myPackage/Platform.kt // contains 'fun count() { }'
+|- jvmMain/kotlin/myPackage/Platform.kt // contains 'fun multiply() { }'
+```
+
+Here both `Platform.kt` files are in the same package, so the Kotlin JVM compiler produces two file facades, both of which
+have FQN `myPackage.PlatformKt`. This produces the "Duplicate JVM classes" error.
+
+The simplest way to avoid that is renaming one of the files according to the guideline above. This naming scheme helps
+avoid clashes while retaining code readability.
+
+> There are two scenarios where these recommendations may seem redundant, but we still advise to follow them:
+> 
+> * Non-JVM platforms don't have issues with duplicating file facades. However, this naming scheme can help you keep
+> file naming consistent.
+> * On JVM, if source files don't have top-level declarations, the file facades aren't generated, and you won't face
+> naming clashes.
+> 
+>   However, this naming scheme can help you avoid situations when a simple refactoring
+> or an addition could include a top-level function and result in the same "Duplicate JVM classes" error.
+> 
+{style="tip"}
 
 ### Source file organization
 
@@ -91,7 +137,7 @@ Package and class naming rules in Kotlin are quite simple:
 names is generally discouraged, but if you do need to use multiple words, you can either just concatenate them together
 or use camel case (`org.example.myProject`).
 
-* Names of classes and objects start with an uppercase letter and use camel case:
+* Names of classes and objects use upper camel case:
 
 ```kotlin
 open class DeclarationProcessor { /*...*/ }
@@ -101,7 +147,7 @@ object EmptyDeclarationProcessor : DeclarationProcessor() { /*...*/ }
 
 ### Function names
  
-Names of functions, properties and local variables start with a lowercase letter and use camel case and no underscores:
+Names of functions, properties and local variables start with a lowercase letter and use camel case with no underscores:
 
 ```kotlin
 fun processDeclarations() { /*...*/ }
@@ -121,8 +167,8 @@ fun Foo(): Foo { return FooImpl() }
 ### Names for test methods
 
 In tests (and **only** in tests), you can use method names with spaces enclosed in backticks.
-Note that such method names are currently not supported by the Android runtime. Underscores in method names are
-also allowed in test code.
+Note that such method names are only supported by Android runtime from API level 30. Underscores
+in method names are also allowed in test code.
 
 ```kotlin
 class MyTestCase {
@@ -135,8 +181,8 @@ class MyTestCase {
 ### Property names
 
 Names of constants (properties marked with `const`, or top-level or object `val` properties with no custom `get` function
-that hold deeply immutable data) should use uppercase underscore-separated ([screaming snake case](https://en.wikipedia.org/wiki/Snake_case))
-names:
+that hold deeply immutable data) should use all uppercase, underscore-separated names following the ([screaming snake case](https://en.wikipedia.org/wiki/Snake_case))
+convention:
 
 ```kotlin
 const val MAX_COUNT = 8
@@ -155,7 +201,7 @@ Names of properties holding references to singleton objects can use the same nam
 val PersonComparator: Comparator<Person> = /*...*/
 ```
 
-For enum constants, it's OK to use either uppercase underscore-separated names ([screaming snake case](https://en.wikipedia.org/wiki/Snake_case))
+For enum constants, it's OK to use either all uppercase, underscore-separated ([screaming snake case](https://en.wikipedia.org/wiki/Snake_case)) names
 (`enum class Color { RED, GREEN }`) or upper camel case names, depending on the usage. 
    
 ### Names for backing properties
@@ -183,8 +229,10 @@ sorting a collection in place, while `sorted` is returning a sorted copy of the 
 The names should make it clear what the purpose of the entity is, so it's best to avoid using meaningless words
 (`Manager`, `Wrapper`) in names.
 
-When using an acronym as part of a declaration name, capitalize it if it consists of two letters (`IOStream`);
-capitalize only the first letter if it is longer (`XmlFormatter`, `HttpInputStream`).
+When using an acronym as part of a declaration name, follow these rules:
+
+* For two-letter acronyms, use uppercase for both letters. For example, `IOStream`.
+* For acronyms longer than two letters, capitalize only the first letter. For example, `XmlFormatter` or `HttpInputStream`.
 
 ## Formatting
 
@@ -192,7 +240,7 @@ capitalize only the first letter if it is longer (`XmlFormatter`, `HttpInputStre
 
 Use four spaces for indentation. Do not use tabs.
 
-For curly braces, put the opening brace in the end of the line where the construct begins, and the closing brace
+For curly braces, put the opening brace at the end of the line where the construct begins, and the closing brace
 on a separate line aligned horizontally with the opening construct.
 
 ```kotlin
@@ -206,16 +254,13 @@ if (elements != null) {
 >In Kotlin, semicolons are optional, and therefore line breaks are significant. The language design assumes 
 >Java-style braces, and you may encounter surprising behavior if you try to use a different formatting style.
 >
-{type="note"}
+{style="note"}
 
 ### Horizontal whitespace
 
 * Put spaces around binary operators (`a + b`). Exception: don't put spaces around the "range to" operator (`0..i`).
-
 * Do not put spaces around unary operators (`a++`).
-
 * Put spaces between control flow keywords (`if`, `when`, `for`, and `while`) and the corresponding opening parenthesis.
-
 * Do not put a space before an opening parenthesis in a primary constructor declaration, method declaration or method call.
 
 ```kotlin
@@ -228,28 +273,23 @@ fun bar() {
 }
 ```
 
-* Never put a space after `(`, `[`, or before `]`, `)`
-
-* Never put a space around `.` or `?.`: `foo.bar().filter { it > 2 }.joinToString()`, `foo?.bar()`
-
-* Put a space after `//`: `// This is a comment`
-
-* Do not put spaces around angle brackets used to specify type parameters: `class Map<K, V> { ... }`
-
-* Do not put spaces around `::`: `Foo::class`, `String::length`
-
-* Do not put a space before `?` used to mark a nullable type: `String?`
+* Never put a space after `(`, `[`, or before `]`, `)`.
+* Never put a space around `.` or `?.`: `foo.bar().filter { it > 2 }.joinToString()`, `foo?.bar()`.
+* Put a space after `//`: `// This is a comment`.
+* Do not put spaces around angle brackets used to specify type parameters: `class Map<K, V> { ... }`.
+* Do not put spaces around `::`: `Foo::class`, `String::length`.
+* Do not put a space before `?` used to mark a nullable type: `String?`.
 
 As a general rule, avoid horizontal alignment of any kind. Renaming an identifier to a name with a different length
 should not affect the formatting of either the declaration or any of the usages.
 
 ### Colon
 
-Put a space before `:` in the following cases:
+Put a space before `:` in the following scenarios:
 
-* when it's used to separate a type and a supertype
-* when delegating to a superclass constructor or a different constructor of the same class
-* after the `object` keyword
+* When it's used to separate a type and a supertype.
+* When delegating to a superclass constructor or a different constructor of the same class.
+* After the `object` keyword.
     
 Don't put a space before `:` when it separates a declaration and its type.
  
@@ -276,7 +316,7 @@ class Person(id: Int, name: String)
 ```
 
 Classes with longer headers should be formatted so that each primary constructor parameter is in a separate line with indentation.
-Also, the closing parenthesis should be on a new line. If you use inheritance, the superclass constructor call or 
+Also, the closing parenthesis should be on a new line. If you use inheritance, the superclass constructor call, or 
 the list of implemented interfaces should be located on the same line as the parenthesis:
 
 ```kotlin
@@ -454,7 +494,7 @@ private val defaultCharset: Charset? =
 ### Control flow statements
 
 If the condition of an `if` or `when` statement is multiline, always use curly braces around the body of the statement.
-Indent each subsequent line of the condition by four spaces relative to statement begin. 
+Indent each subsequent line of the condition by four spaces relative to the statement start. 
 Put the closing parentheses of the condition together with the opening curly brace on a separate line:
 
 ```kotlin
@@ -533,12 +573,12 @@ val anchor = owner
     .dropWhile { it is PsiComment || it is PsiWhiteSpace }
 ```
 
-The first call in the chain usually should have a line break before it, but it's OK to omit it if the code makes more sense that way.
+The first call in the chain should usually have a line break before it, but it's OK to omit it if the code makes more sense that way.
 
 ### Lambdas
 
 In lambda expressions, spaces should be used around the curly braces, as well as around the arrow which separates the parameters
-from the body. If a call takes a single lambda, pass it outside of parentheses whenever possible.
+from the body. If a call takes a single lambda, pass it outside parentheses whenever possible.
 
 ```kotlin
 list.filter { it > 10 }
@@ -575,7 +615,7 @@ foo {
 
 ### Trailing commas
 
-A trailing comma is a comma symbol after the last item of a series of elements:
+A trailing comma is a comma symbol after the last item in a series of elements:
 
 ```kotlin
 class Person(
@@ -596,7 +636,7 @@ Trailing commas are entirely optional – your code will still work without them
 To enable trailing commas in the IntelliJ IDEA formatter, go to **Settings/Preferences | Editor | Code Style | Kotlin**, 
 open the **Other** tab and select the **Use trailing comma** option.
 
-#### Enumerations {initial-collapse-state="collapsed"}
+#### Enumerations {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 enum class Direction {
@@ -607,7 +647,7 @@ enum class Direction {
 }
 ```
 
-#### Value arguments {initial-collapse-state="collapsed"}
+#### Value arguments {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 fun shift(x: Int, y: Int) { /*...*/ }
@@ -622,7 +662,7 @@ val colors = listOf(
 )
 ```
 
-#### Class properties and parameters {initial-collapse-state="collapsed"}
+#### Class properties and parameters {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 class Customer(
@@ -635,7 +675,7 @@ class Customer(
 )
 ```
 
-#### Function value parameters {initial-collapse-state="collapsed"}
+#### Function value parameters {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 fun powerOf(
@@ -652,7 +692,7 @@ fun print(
 ) {}
 ```
 
-#### Parameters with optional type (including setters) {initial-collapse-state="collapsed"}
+#### Parameters with optional type (including setters) {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 val sum: (Int, Int, Int) -> Int = fun(
@@ -665,7 +705,7 @@ val sum: (Int, Int, Int) -> Int = fun(
 println(sum(8, 8, 8))
 ```
 
-#### Indexing suffix {initial-collapse-state="collapsed"}
+#### Indexing suffix {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 class Surface {
@@ -678,7 +718,7 @@ fun getZValue(mySurface: Surface, xValue: Int, yValue: Int) =
     ]
 ```
 
-#### Parameters in lambdas {initial-collapse-state="collapsed"}
+#### Parameters in lambdas {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 fun main() {
@@ -692,7 +732,7 @@ fun main() {
 }
 ```
 
-#### `when` entry {initial-collapse-state="collapsed"}
+#### when entry {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 fun isReferenceApplicable(myReference: KClass<*>) = when (myReference) {
@@ -704,7 +744,7 @@ fun isReferenceApplicable(myReference: KClass<*>) = when (myReference) {
 }
 ```
 
-#### Collection literals (in annotations) {initial-collapse-state="collapsed"}
+#### Collection literals (in annotations) {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 annotation class ApplicableFor(val services: Array<String>)
@@ -717,7 +757,7 @@ annotation class ApplicableFor(val services: Array<String>)
 fun run() {}
 ```
 
-#### Type arguments {initial-collapse-state="collapsed"}
+#### Type arguments {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 fun <T1, T2> foo() {}
@@ -729,7 +769,7 @@ fun main() {
 }
 ```
 
-#### Type parameters {initial-collapse-state="collapsed"}
+#### Type parameters {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 class MyMap<
@@ -738,7 +778,7 @@ class MyMap<
         > {}
 ```
 
-#### Destructuring declarations {initial-collapse-state="collapsed"}
+#### Destructuring declarations {initial-collapse-state="collapsed" collapsible="true"}
 
 ```kotlin
 data class Car(val manufacturer: String, val model: String, val year: Int)
@@ -843,7 +883,7 @@ mutated. When using factory functions to create collection instances, always use
 collection types when possible:
 
 ```kotlin
-// Bad: use of mutable collection type for value which will not be mutated
+// Bad: use of a mutable collection type for value which will not be mutated
 fun validateValue(actualValue: String, allowedValues: HashSet<String>) { ... }
 
 // Good: immutable collection type used instead
@@ -942,7 +982,7 @@ For example, use this syntax with `if`:
 if (x == null) ... else ...
 ```
 
-instead of this one with `when`:
+Instead of this one with `when`:
 
 ```kotlin
 when (x) {
@@ -952,6 +992,24 @@ when (x) {
 ```
 
 Prefer using `when` if there are three or more options.
+
+### Guard conditions in when expression
+
+Use parentheses when combining multiple boolean expressions in `when` expressions or statements with [guard conditions](control-flow.md#guard-conditions-in-when-expressions):
+
+```kotlin
+when (status) {
+    is Status.Ok if (status.info.isEmpty() || status.info.id == null) -> "no information"
+}
+```
+
+Instead of:
+
+```kotlin
+when (status) {
+    is Status.Ok if status.info.isEmpty() || status.info.id == null -> "no information"
+}
+```
 
 ### Nullable Boolean values in conditions
 
@@ -967,11 +1025,11 @@ of the operations being performed in each case and keep performance consideratio
 
 ### Loops on ranges
 
-Use the `until` function to loop over an open range:
+Use the `..<` operator to loop over an open-ended range:
 
 ```kotlin
 for (i in 0..n - 1) { /*...*/ }  // bad
-for (i in 0 until n) { /*...*/ }  // good
+for (i in 0..<n) { /*...*/ }  // good
 ```
 
 ### Strings
@@ -1016,14 +1074,14 @@ Learn the difference between [Java and Kotlin multiline strings](java-to-kotlin-
 
 ### Functions vs properties
 
-In some cases functions with no arguments might be interchangeable with read-only properties. 
+In some scenarios, functions with no arguments might be interchangeable with read-only properties. 
 Although the semantics are similar, there are some stylistic conventions on when to prefer one to another.
 
 Prefer a property over a function when the underlying algorithm:
 
-* does not throw
-* is cheap to calculate (or cached on the first run)
-* returns the same result over invocations if the object state hasn't changed
+* Does not throw.
+* Is cheap to calculate (or cached on the first run).
+* Returns the same result over invocations if the object state hasn't changed.
 
 ### Extension functions
 
@@ -1041,7 +1099,7 @@ Do not declare a method as `infix` if it mutates the receiver object.
 
 ### Factory functions
 
-If you declare a factory function for a class, avoid giving it the same name as the class itself. Prefer using a distinct name
+If you declare a factory function for a class, avoid giving it the same name as the class itself. Prefer using a distinct name,
 making it clear why the behavior of the factory function is special. Only if there is really no special semantics,
 you can use the same name as the class.
 
@@ -1091,8 +1149,10 @@ For the guidance on choosing the right scope function for your case, refer to [S
 
 When writing libraries, it's recommended to follow an additional set of rules to ensure API stability:
 
- * Always explicitly specify member visibility (to avoid accidentally exposing declarations as public API)
+ * Always explicitly specify member visibility (to avoid accidentally exposing declarations as public API).
  * Always explicitly specify function return types and property types (to avoid accidentally changing the return type
-   when the implementation changes)
- * Provide [KDoc](kotlin-doc.md) comments for all public members, with the exception of overrides that do not require any new documentation
-   (to support generating documentation for the library)
+   when the implementation changes).
+ * Provide [KDoc](kotlin-doc.md) comments for all public members, except for overrides that do not require any new documentation
+   (to support generating documentation for the library).
+
+Learn more about best practices and ideas to consider when writing an API for your library in the [Library authors' guidelines](api-guidelines-introduction.md).

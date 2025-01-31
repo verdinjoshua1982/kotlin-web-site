@@ -1,8 +1,8 @@
 [//]: # (title: Publishing multiplatform libraries)
 
 You can publish a multiplatform library to a local Maven repository with the [`maven-publish` Gradle plugin](https://docs.gradle.org/current/userguide/publishing_maven.html). 
-Specify the group, version, and the [repositories](https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:repositories) 
-where the library should be published. The plugin creates publications automatically.
+In the `shared/build.gradle.kts` file, specify the group, version, and the [repositories](https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:repositories) where the library
+should be published. The plugin creates publications automatically.
 
 ```kotlin
 plugins {
@@ -22,12 +22,9 @@ publishing {
 }
 ```
 
-To get hands-on experience, as well as learn how to publish a multiplatform library to the external Maven Central repository,
-see the [Create and publish a multiplatform library](multiplatform-library.md) tutorial.
-
 > You can also publish a multiplatform library to a GitHub repository. For more information, see GitHub's documentation on [GitHub packages](https://docs.github.com/en/packages).
 >
-{type="tip"}
+{style="tip"}
 
 ## Structure of publications
 
@@ -44,22 +41,47 @@ This `kotlinMultiplatform` publication includes metadata artifacts and reference
 > The Kotlin Multiplatform plugin automatically produces the required artifact with the embedded metadata artifacts.  
 > This means you don't have to customize your build by adding an empty artifact to the root module of your library to meet the repository's requirements.
 >
-{type="note"}
- 
+{style="note"}
+
 The `kotlinMultiplatform` publication may also need the sources and documentation artifacts if that is required by the repository. In that case, 
 add those artifacts by using [`artifact(...)`](https://docs.gradle.org/current/javadoc/org/gradle/api/publish/maven/MavenPublication.html#artifact-java.lang.Object-) 
 in the publication's scope.
 
-## Avoid duplicate publications
+## Host requirements
 
-To avoid duplicate publications of modules that can be built on several platforms (like JVM and JS), 
-configure the publishing tasks for these modules to run conditionally.
+Kotlin/Native supports cross-compilation, allowing any host to produce necessary `.klib` artifacts.
+However, there are still some specifics you should keep in mind.
 
-You can detect the platform in the script, introduce a flag such as `isMainHost` and set it to `true` for the main target 
-platform. Alternatively, you can pass the flag from an external source, for example, from CI configuration. 
+### Compilation for Apple targets
+<primary-label ref="experimental-opt-in"/>
 
-This simplified example ensures that publications are only uploaded when `isMainHost=true` is passed. This means that 
-a publication that can be published from multiple platforms will be published only once – from the main host.
+To produce artifacts for projects with Apple targets, you'd normally need an Apple machine.
+However, if you want to use other hosts, set this option in your `gradle.properties` file:
+
+```none
+kotlin.native.enableKlibsCrossCompilation=true
+```
+
+Cross-compilation is currently Experimental and has some limitations. You still need to use a Mac machine if:
+
+* Your library has a [cinterop dependency](native-c-interop.md).
+* You have [CocoaPods integration](native-cocoapods.md) set up in your project.
+* You need to build or test [final binaries](multiplatform-build-native-binaries.md) for Apple targets.
+
+### Duplicating publications
+
+To avoid any issues during publication, publish all artifacts from a single host to avoid duplicating publications in the
+repository. Maven Central, for example, explicitly forbids duplicate publications and fails the process.
+<!-- TBD: add the actual error -->
+  
+#### If you use Kotlin 1.7.0 or earlier {initial-collapse-state="collapsed" collapsible="true"}
+
+Before 1.7.20, the Kotlin/Native compiler didn't support all cross-compilation options. If you use earlier versions, you may need
+to publish multiplatform projects from multiple hosts: a Windows host to compile a Windows target, a Linux host to compile a Linux target, and so on.
+This can result in duplicate publications of modules that are cross-compiled. The most straightforward way to avoid this is to upgrade to a later
+version of Kotlin and publish from a single host as described above.
+
+If upgrading is not an option, assign a main host for each target and check for it in the `shared/build.gradle(.kts)` file:
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -70,15 +92,17 @@ kotlin {
     js()
     mingwX64()
     linuxX64()
-    val publicationsFromMainHost = 
+  
+    val publicationsFromMainHost =
         listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
+  
     publishing {
         publications {
             matching { it.name in publicationsFromMainHost }.all {
                 val targetPublication = this@all
                 tasks.withType<AbstractPublishToMaven>()
-                        .matching { it.publication == targetPublication }
-                        .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                    .matching { it.publication == targetPublication }
+                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
             }
         }
     }
@@ -94,14 +118,16 @@ kotlin {
     js()
     mingwX64()
     linuxX64()
-    def publicationsFromMainHost = 
+  
+    def publicationsFromMainHost =
         [jvm(), js()].collect { it.name } + "kotlinMultiplatform"
+  
     publishing {
         publications {
             matching { it.name in publicationsFromMainHost }.all { targetPublication ->
                 tasks.withType(AbstractPublishToMaven)
-                        .matching { it.publication == targetPublication }
-                        .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                    .matching { it.publication == targetPublication }
+                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
             }
         }
     }
@@ -111,26 +137,24 @@ kotlin {
 </tab>
 </tabs>
 
-By default, each publication includes a sources JAR that contains the sources used by the main compilation of the target. 
-
 ## Publish an Android library
 
 To publish an Android library, you need to provide additional configuration.
 
 By default, no artifacts of an Android library are published. To publish artifacts produced by a set of [Android variants](https://developer.android.com/studio/build/build-variants), 
-specify the variant names in the Android target block:
+specify the variant names in the Android target block in the `shared/build.gradle.kts` file:
 
 ```kotlin
 kotlin {
-    android {
-        publishLibraryVariants("release", "debug")
+    androidTarget {
+        publishLibraryVariants("release")
     }
 }
 
 ```
 
 The example works for Android libraries without [product flavors](https://developer.android.com/studio/build/build-variants#product-flavors). 
-For a library with product flavors, the variant names also contain the flavors, like `fooBarDebug` or `fooBazRelease`.
+For a library with product flavors, the variant names also contain the flavors, like `fooBarDebug` or `fooBarRelease`.
 
 The default publishing setup is as follows:
 * If the published variants have the same build type (for example, all of them are `release` or`debug`),
@@ -145,17 +169,84 @@ set this Gradle property: `kotlin.android.buildTypeAttribute.keep=true`.
 
 You can also publish variants grouped by the product flavor, so that the outputs of the different build types are placed 
 in a single module, with the build type becoming a classifier for the artifacts (the release build type is still published 
-with no classifier). This mode is disabled by default and can be enabled as follows:
+with no classifier). This mode is disabled by default and can be enabled as follows in the `shared/build.gradle.kts` file:
 
 ```kotlin
 kotlin {
-    android {
+    androidTarget {
         publishLibraryVariantsGroupedByFlavor = true
     }
 }
 ```
 
 > It is not recommended that you publish variants grouped by the product flavor in case they have different dependencies, 
-> as those will be merged into one dependencies list.
+> as those will be merged into one dependency list.
 >
-{type="note"}
+{style="note"}
+
+## Disable sources publication
+
+By default, the Kotlin Multiplatform Gradle plugin publishes sources for all the specified targets. However,
+you can configure and disable sources publication with the `withSourcesJar()` API in the `shared/build.gradle.kts` file:
+
+* To disable sources publication for all the targets:
+
+  ```kotlin
+  kotlin {
+      withSourcesJar(publish = false)
+  
+      jvm()
+      linuxX64()
+  }
+  ```
+
+* To disable sources publication only for the specified target:
+
+  ```kotlin
+  kotlin {
+       // Disable sources publication only for JVM:
+      jvm {
+          withSourcesJar(publish = false)
+      }
+      linuxX64()
+  }
+  ```
+
+* To disable sources publication for all targets except for the specified target:
+
+  ```kotlin
+  kotlin {
+      // Disable sources publication for all targets except for JVM:
+      withSourcesJar(publish = false)
+  
+      jvm {
+          withSourcesJar(publish = true)
+      }
+      linuxX64()
+  }
+  ```
+
+## Disable JVM environment attribute publication
+
+Starting with Kotlin 2.0.0, the Gradle attribute [`org.gradle.jvm.environment`](https://docs.gradle.org/current/userguide/variant_attributes.html#sub:jvm_default_attributes)
+is automatically published with all Kotlin variants to help distinguish between JVM and Android variants of Kotlin Multiplatform
+libraries. The attribute indicates which library variant is suited for which JVM environment, and Gradle uses this information to help with 
+dependency resolution in your projects. The target environment can be "android", "standard-jvm", or "no-jvm".
+
+You can disable the publication of this attribute by adding the following Gradle property to your `gradle.properties` file:
+
+```none
+kotlin.publishJvmEnvironmentAttribute=false
+```
+
+## Promote your library
+
+Your library can be featured on the [JetBrains' search platform](https://klibs.io/).
+It's designed to make it easy to look for Kotlin Multiplatform libraries based on their target platforms.
+
+Libraries that meet the criteria are added automatically. For more information on how to add your library, see [FAQ](https://klibs.io/faq).
+
+## What's next
+
+See the [Library authors' guidelines](api-guidelines-build-for-multiplatform.md) for best practices and tips
+on designing a library for Kotlin Multiplatform.

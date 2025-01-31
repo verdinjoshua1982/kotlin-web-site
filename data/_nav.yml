@@ -368,6 +368,8 @@ reference:
           title: Compatibility Guide for Kotlin 1.7.20
         - url: /docs/reference/compatibility-guide-18.html
           title: Compatibility Guide for Kotlin 1.8.0
+        - url: /docs/reference/compatibility-guide-19.html
+          title: Compatibility Guide for Kotlin 1.9.0
 
     - title: FAQ
       description: Every question you could possibly think of, might be answered.
@@ -496,9 +498,9 @@ tutorials:
     - title: Education
       content:
         - url: /docs/tutorials/edu-tools-learner.html
-          title: Learning Kotlin with EduTools plugin
+          title: Learning Kotlin with JetBrains Academy plugin
         - url: /docs/tutorials/edu-tools-educator.html
-          title: Teaching Kotlin with EduTools plugin
+          title: Teaching Kotlin with JetBrains Academy plugin
 
 foundation:
   content:

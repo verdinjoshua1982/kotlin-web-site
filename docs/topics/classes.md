@@ -16,8 +16,8 @@ class Empty
 
 ## Constructors
 
-A class in Kotlin can have a _primary constructor_ and one or more _secondary constructors_. The primary constructor is a
-part of the class header, and it goes after the class name and optional type parameters.
+A class in Kotlin has a _primary constructor_ and possibly one or more _secondary constructors_. The primary constructor
+is declared in the class header, and it goes after the class name and optional type parameters.
 
 ```kotlin
 class Person constructor(firstName: String) { /*...*/ }
@@ -29,8 +29,10 @@ If the primary constructor does not have any annotations or visibility modifiers
 class Person(firstName: String) { /*...*/ }
 ```
 
-The primary constructor cannot contain any code. Initialization code can be placed in _initializer blocks_ prefixed with
-the `init` keyword.
+The primary constructor initializes a class instance and its properties in the class header. The class header can't contain
+any runnable code. If you want to run some code during object creation, use _initializer blocks_ inside the class body.
+Initializer blocks are declared with the `init` keyword followed by curly braces. Write any code that you want to run
+within the curly braces.
 
 During the initialization of an instance, the initializer blocks are executed in the same order as they appear in the
 class body, interleaved with the property initializers:
@@ -127,8 +129,8 @@ class Person(val name: String) {
 ```
 
 Code in initializer blocks effectively becomes part of the primary constructor. Delegation to the primary constructor
-happens as the first statement of a secondary constructor, so the code in all initializer blocks and property initializers
-is executed before the body of the secondary constructor.
+happens at the moment of access to the first statement of a secondary constructor, so the code in all initializer blocks
+and property initializers is executed before the body of the secondary constructor.
 
 Even if the class has no primary constructor, the delegation still happens implicitly, and the initializer blocks are
 still executed:
@@ -167,11 +169,11 @@ class DontCreateMe private constructor() { /*...*/ }
 > class Customer(val customerName: String = "")
 > ```
 >
-{type="note"}
+{style="note"}
 
 ## Creating instances of classes
 
-To create an instance of a class, call the constructor as if it were a regular function:
+To create an instance of a class, call the constructor as if it were a regular function. You can assign the created instance to a [variable](basic-syntax.md#variables):
 
 ```kotlin
 val invoice = Invoice()
@@ -181,7 +183,7 @@ val customer = Customer("Joe Smith")
 
 > Kotlin does not have a `new` keyword.
 >
-{type="note"}
+{style="note"}
 
 The process of creating instances of nested, inner, and anonymous inner classes is described in [Nested classes](nested-classes.md).
 

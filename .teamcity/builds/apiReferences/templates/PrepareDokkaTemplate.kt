@@ -5,31 +5,42 @@ import jetbrains.buildServer.configs.kotlin.buildSteps.script
 
 object PrepareDokkaTemplate: Template({
   name = "Build Custom HTML Template"
+  artifactRules = """
+      dokka-templates/** => dokka-templates
+  """.trimIndent()
+
+  requirements {
+    doesNotContain("teamcity.agent.name", "windows")
+  }
+
+  params {
+//      param("env.ALGOLIA_INDEX_NAME", "")
+  }
 
   vcs {
     root(vcsRoots.KotlinLangOrg)
   }
 
-  artifactRules = "dokka-templates/** => dokka-templates"
-
   steps {
+    script {
+      name = "Fix npm sharp platform related issue"
+      scriptContent = """
+        rm -rf node_modules/sharp
+      """.trimIndent()
+    }
     script {
       name = "Install dependencies"
       scriptContent = """
         yarn install --frozen-lockfile
       """.trimIndent()
-      dockerImage = "node:14-alpine"
+      dockerImage = "node:16-alpine"
     }
     script {
       name = "Build Templates"
       scriptContent = """
         node ./scripts/dokka/generate-templates.js
       """.trimIndent()
-      dockerImage = "node:14-alpine"
+      dockerImage = "node:16-alpine"
     }
-  }
-
-  requirements {
-    doesNotContain("teamcity.agent.name", "windows")
   }
 })

@@ -1,15 +1,13 @@
-[//]: # (title: Document Kotlin code: KDoc and Dokka)
+[//]: # (title: Document Kotlin code: KDoc)
 
-The language used to document Kotlin code (the equivalent of Java's Javadoc) is called **KDoc**. In its essence, KDoc
+The language used to document Kotlin code (the equivalent of Java's Javadoc) is called **KDoc**. In essence, KDoc
 combines Javadoc's syntax for block tags (extended to support Kotlin's specific constructs) and Markdown for
 inline markup.
 
-## Generate the documentation
-
-Kotlin's documentation generation tool is called [Dokka](https://github.com/Kotlin/dokka). See the
-[Dokka README](https://github.com/Kotlin/dokka/blob/master/README.md) for usage instructions.
-
-Dokka has plugins for Gradle, Maven, and Ant, so you can integrate documentation generation into your build process.
+> Kotlin's documentation engine: Dokka, understands KDoc and can be used to generate documentation in various formats.
+> For more information, read our [Dokka documentation](dokka-introduction.md).
+>
+{style="note"}
 
 ## KDoc syntax
 
@@ -52,7 +50,7 @@ Documents a value parameter of a function or a type parameter of a class, proper
 To better separate the parameter name from the description, if you prefer, you can enclose the name of the
 parameter in brackets. The following two syntaxes are therefore equivalent:
 
-```
+```none
 @param name description.
 @param[name] description.
 ```
@@ -103,9 +101,9 @@ Specifies the version of the software in which the element being documented was 
 Excludes the element from the generated documentation. Can be used for elements which are not part of the official
 API of a module but still have to be visible externally.
 
-> KDoc does not support the `@deprecated` tag. Instead, please use the `@Deprecated` annotation.
+> KDoc does not support the `@deprecated` tag. Instead, please use the [`@Deprecated`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-deprecated/) annotation.
 >
-{type="note"}
+{style="note"}
 
 ## Inline markup
 
@@ -116,57 +114,39 @@ to support a shorthand syntax for linking to other elements in the code.
 
 To link to another element (class, method, property, or parameter), simply put its name in square brackets:
 
-```
+```none
 Use the method [foo] for this purpose.
 ```
 
-If you want to specify a custom label for the link, use the Markdown reference-style syntax:
+If you want to specify a custom label for the link, add it in another set of square brackets before the element link:
 
-```
+```none
 Use [this method][foo] for this purpose.
 ```
 
-You can also use qualified names in the links. Note that, unlike Javadoc, qualified names always use the dot character
+You can also use qualified names in the element links. Note that, unlike Javadoc, qualified names always use the dot character
 to separate the components, even before a method name:
 
-```
+```none
 Use [kotlin.reflect.KClass.properties] to enumerate the properties of the class.
 ```
 
-Names in links are resolved using the same rules as if the name was used inside the element being documented.
+Names in element links are resolved using the same rules as if the name was used inside the element being documented.
 In particular, this means that if you have imported a name into the current file, you don't need to fully qualify it
 when you use it in a KDoc comment.
 
-Note that KDoc does not have any syntax for resolving overloaded members in links. Since the Kotlin documentation generation
+Note that KDoc does not have any syntax for resolving overloaded members in links. Since Kotlin's documentation generation
 tool puts the documentation for all overloads of a function on the same page, identifying a specific overloaded function
 is not required for the link to work.
 
-## Module and package documentation
+### External links
 
-Documentation for a module as a whole, as well as packages in that module, is provided as a separate Markdown file,
-and the paths to that file is passed to Dokka using the `-include` command line parameter or the corresponding parameters
-in Ant, Maven and Gradle plugins.
+To add an external link, use the typical Markdown syntax:
 
-Inside the file, the documentation for the module as a whole and for individual packages is introduced by the corresponding
-first-level headings. The text of the heading must be **Module `<module name>`** for the module, and **Package `<package qualified name>`**
-for a package.
-
-Here's an example content of the file:
-
-```text
-# Module kotlin-demo
-
-The module shows the Dokka syntax usage.
-
-# Package org.jetbrains.kotlin.demo
-
-Contains assorted useful stuff.
-
-## Level 2 heading
-
-Text after this heading is also part of documentation for `org.jetbrains.kotlin.demo`
-
-# Package org.jetbrains.kotlin.demo2
-
-Useful stuff in another package.
+```none
+For more information about KDoc syntax, see [KDoc](<example-URL>).
 ```
+
+## What's next?
+
+Learn how to use Kotlin's documentation generation tool: [Dokka](dokka-introduction.md).

@@ -14,8 +14,6 @@ out/
 _assets
 ~$*
 .DS_Store/
-.idea/workspace.xml
-.idea/uiDesigner.xml
 ~$*
 lib/kotlin-runtime.jar
 _site/
@@ -44,7 +42,11 @@ external/
 assets/externals
 pages/docs/tutorials/kotlin-for-py/
 _teamcity
-dist
+/dist
+libs
 generated
 .next
 .teamcity/*.iml
+
+/reports*
+/data/page_views_map.json

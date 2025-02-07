@@ -2,6 +2,106 @@
 
 For a quick start, you can create your own processor or get a [sample one](https://github.com/google/ksp/tree/main/examples/playground).
 
+## Add a processor
+
+To add a processor, you need to include the KSP Gradle Plugin and add a dependency on the processor:
+
+1. Add the KSP Gradle Plugin `com.google.devtools.ksp` to your `build.gradle(.kts)` file:
+
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
+```kotlin
+plugins {
+    id("com.google.devtools.ksp") version "%kspSupportedKotlinVersion%-%kspVersion%"
+}
+```
+
+</tab>
+<tab title="Groovy" group-key="groovy">
+
+```groovy
+plugins {
+    id 'com.google.devtools.ksp' version '%kspSupportedKotlinVersion%-%kspVersion%'
+}
+```
+
+</tab>
+</tabs>
+
+2. Add a dependency on the processor.
+This example uses [Dagger](https://dagger.dev/dev-guide/ksp.html). Replace it with the processor you want to add.
+
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
+```kotlin
+dependencies {
+    implementation("com.google.dagger:dagger-compiler:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
+}
+```
+
+</tab>
+<tab title="Groovy" group-key="groovy">
+
+```groovy
+dependencies {
+    implementation 'com.google.dagger:dagger-compiler:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.51.1'
+}
+```
+
+</tab>
+</tabs>
+
+3. Run `./gradlew build`. You can find the generated code in the `build/generated/ksp` directory.
+
+Here is a full example:
+
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
+```kotlin
+plugins {
+    id("com.google.devtools.ksp") version "%kspSupportedKotlinVersion%-%kspVersion%"
+    kotlin("jvm")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.google.dagger:dagger-compiler:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
+}
+```
+
+</tab>
+<tab title="Groovy" group-key="groovy">
+
+```groovy
+plugins {
+    id 'com.google.devtools.ksp' version '%kspSupportedKotlinVersion%-%kspVersion%'
+    id 'org.jetbrains.kotlin.jvm' version '%kotlinVersion%'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:%kotlinVersion%'
+    implementation 'com.google.dagger:dagger-compiler:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.51.1'
+}
+```
+
+</tab>
+</tabs>
+
 ## Create a processor of your own
 
 1. Create an empty gradle project.
@@ -20,7 +120,7 @@ buildscript {
         classpath(kotlin("gradle-plugin", version = "%kspSupportedKotlinVersion%"))
     }
 }
- ```
+```
 
 </tab>
 <tab title="Groovy" group-key="groovy">
@@ -98,7 +198,7 @@ dependencies {
         * `src/main/kotlin/BuilderProcessor.kt`
         * `src/main/kotlin/TestProcessor.kt`
     * After writing your own processor, register your processor provider to the package by including its fully-qualified
-      name in `resources/META-INF/services/com.google.devtools.ksp.processing.SymbolProcessorProvider`.
+      name in `src/main/resources/META-INF/services/com.google.devtools.ksp.processing.SymbolProcessorProvider`.
 
 ## Use your own processor in a project
 
@@ -166,7 +266,7 @@ dependencies {
 </tabs>
 
 3. Run `./gradlew build`. You can find the generated code under
-   `build/generated/source/ksp`.
+   `build/generated/ksp`.
 
 Here's a sample build script to apply the KSP plugin to a workload:
 
@@ -219,13 +319,19 @@ Processor options in `SymbolProcessorEnvironment.options` are specified in gradl
 
 ```none
 ksp {
-  arg("option1", "value1")
-  arg("option2", "value2")
-  ...
+    arg("option1", "value1")
+    arg("option2", "value2")
+    ...
 }
 ```
 
 ## Make IDE aware of generated code
+
+> Generated source files are registered automatically since KSP 1.8.0-1.0.9.
+> If you're using KSP 1.0.9 or newer and don't need to make the IDE aware of generated resources,
+> feel free to skip this section.
+>
+{style="note"}
 
 By default, IntelliJ IDEA or other IDEs don't know about the generated code. So it will mark references to generated
 symbols unresolvable. To make an IDE be able to reason about the generated symbols, mark the
@@ -287,17 +393,17 @@ In this case, use the following script instead:
 
 ```kotlin
 plugins {
-   // ...
-   idea
+    // ...
+    idea
 }
 
 idea {
-   module {
-      // Not using += due to https://github.com/gradle/gradle/issues/8749
-      sourceDirs = sourceDirs + file("build/generated/ksp/main/kotlin") // or tasks["kspKotlin"].destination
-      testSourceDirs = testSourceDirs + file("build/generated/ksp/test/kotlin")
-      generatedSourceDirs = generatedSourceDirs + file("build/generated/ksp/main/kotlin") + file("build/generated/ksp/test/kotlin")
-   }
+    module {
+        // Not using += due to https://github.com/gradle/gradle/issues/8749
+        sourceDirs = sourceDirs + file("build/generated/ksp/main/kotlin") // or tasks["kspKotlin"].destination
+        testSourceDirs = testSourceDirs + file("build/generated/ksp/test/kotlin")
+        generatedSourceDirs = generatedSourceDirs + file("build/generated/ksp/main/kotlin") + file("build/generated/ksp/test/kotlin")
+    }
 }
 ```
 
@@ -306,17 +412,17 @@ idea {
 
 ```groovy
 plugins {
-   // ...
-   id 'idea'
+    // ...
+    id 'idea'
 }
 
 idea {
-   module {
-      // Not using += due to https://github.com/gradle/gradle/issues/8749
-      sourceDirs = sourceDirs + file('build/generated/ksp/main/kotlin') // or tasks["kspKotlin"].destination
-      testSourceDirs = testSourceDirs + file('build/generated/ksp/test/kotlin')
-      generatedSourceDirs = generatedSourceDirs + file('build/generated/ksp/main/kotlin') + file('build/generated/ksp/test/kotlin')
-   }
+    module {
+        // Not using += due to https://github.com/gradle/gradle/issues/8749
+        sourceDirs = sourceDirs + file('build/generated/ksp/main/kotlin') // or tasks["kspKotlin"].destination
+        testSourceDirs = testSourceDirs + file('build/generated/ksp/test/kotlin')
+        generatedSourceDirs = generatedSourceDirs + file('build/generated/ksp/main/kotlin') + file('build/generated/ksp/test/kotlin')
+    }
 }
 ```
 

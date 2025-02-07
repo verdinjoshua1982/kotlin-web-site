@@ -1,52 +1,36 @@
 package builds.apiReferences.kotlinx.datetime
 
+import BuildParams.KOTLINX_DATETIME_ID
+import BuildParams.KOTLINX_DATETIME_RELEASE_TAG
+import builds.apiReferences.BuildApiPages
 import builds.apiReferences.dependsOnDokkaTemplate
-import jetbrains.buildServer.configs.kotlin.BuildType
-import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.triggers.vcs
+import builds.apiReferences.scriptBuildHtml
+import builds.apiReferences.scriptDropSnapshot
+import builds.apiReferences.vcsRoots.KotlinxDatetime
 
-object KotlinxDatetimeBuildApiReference : BuildType({
-  name = "kotlinx-datetime API reference"
+private const val DOKKA_HTML_RESULT = "core/build/dokka/html"
 
-  artifactRules = "core/build/dokka/html/** => pages.zip"
-
-  steps {
-    script {
-      name = "Drop SNAPSHOT word for deploy"
-      scriptContent = """
+object KotlinxDatetimeBuildApiReference : BuildApiPages(
+    apiId = KOTLINX_DATETIME_ID,
+    releaseTag = KOTLINX_DATETIME_RELEASE_TAG,
+    pagesRoot = DOKKA_HTML_RESULT,
+    stepDropSnapshot = {
+        scriptDropSnapshot {
+            // language=bash
+            scriptContent = """
                 #!/bin/bash
                 sed -i -E "s/versionSuffix=SNAPSHOT//gi" ./gradle.properties
             """.trimIndent()
-      dockerImage = "debian"
-    }
-    gradle {
-      name = "Build dokka html"
-      tasks = ":kotlinx-datetime:dokkaHtml"
-      useGradleWrapper = true
-    }
-  }
-
-  params {
-    param("release.tag", BuildParams.KOTLINX_DATETIME_RELEASE_TAG)
-    param("teamcity.vcsTrigger.runBuildInNewEmptyBranch", "true")
-  }
-
-  vcs {
-    root(builds.apiReferences.vcsRoots.KotlinxDatetime)
-  }
-
-  triggers {
-    vcs {
-      branchFilter = "+:<default>"
-    }
-  }
-
-  requirements {
-    doesNotContain("teamcity.agent.name", "windows")
-  }
-
-  dependencies {
-    dependsOnDokkaTemplate(KotlinxDatetimePrepareDokkaTemplates, "core/dokka-templates")
-  }
-})
+        }
+    },
+    stepBuildHtml = {
+        scriptBuildHtml { tasks = ":kotlinx-datetime:dokkaHtml" }
+    },
+    init = {
+        vcs {
+            root(KotlinxDatetime)
+        }
+        dependencies {
+            dependsOnDokkaTemplate(KotlinxDatetimePrepareDokkaTemplates, "core/dokka-templates")
+        }
+    })

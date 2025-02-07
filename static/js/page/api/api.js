@@ -4,7 +4,7 @@ import Dropdown from '../../com/dropdown'
 import NavTree from '../../com/nav-tree'
 import './api.scss'
 
-const DEFAULT_VERSION = '1.8';
+const DEFAULT_VERSION = '2.0';
 const LOCAL_STORAGE_KEY = 'targetApi';
 const PLATFORM_AVAILABILITY = {
     'jvm': '1.0',
@@ -193,7 +193,9 @@ function initializeSelects() {
       '1.5': '1.5',
       '1.6': '1.6',
       '1.7': '1.7',
-      '1.8': '1.8'
+      '1.8': '1.8',
+      '1.9': '1.9',
+      '2.0': '2.0'
     },
     selected: state.version != null ? state.version : DEFAULT_VERSION,
     onSelect: (version) => {
@@ -211,9 +213,11 @@ function initializeSelects() {
 }
 
 function initializeSections() {
-  $(".declarations").click((event) => {
-    window.location.href = $(event.currentTarget).find("a:first").attr("href")
-  });
+    $(".declarations").click(event => {
+        event.preventDefault();
+        const url = $(event.currentTarget).find("a:first").attr("href");
+        window.open(url, event.ctrlKey || event.metaKey? '_blank' : '_self');
+    });
 }
 
 function handleApiPageScroll() {

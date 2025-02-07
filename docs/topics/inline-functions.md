@@ -35,7 +35,7 @@ into the call site.
 Inlining may cause the generated code to grow. However, if you do it in a reasonable way (avoiding inlining large
 functions), it will pay off in performance, especially at "megamorphic" call-sites inside loops.
 
-## `noinline`
+## noinline
 
 If you don't want all of the lambdas passed to an inline function to be inlined, mark some of your function
 parameters with the `noinline` modifier:
@@ -52,9 +52,11 @@ however, can be manipulated in any way you like, including being stored in field
 > is very unlikely to be beneficial (you can use the `@Suppress("NOTHING_TO_INLINE")` annotation to suppress the warning
 > if you are sure the inlining is needed).
 >
-{type="note"}
+{style="note"}
 
-## Non-local returns
+## Non-local jump expressions
+
+### Returns
 
 In Kotlin, you can only use a normal, unqualified `return` to exit a named function or an anonymous function.
 To exit a lambda, use a [label](returns.md#return-to-labels). A bare `return` is forbidden
@@ -122,9 +124,30 @@ inline fun f(crossinline body: () -> Unit) {
 }
 ```
 
-> `break` and `continue` are not yet available in inlined lambdas, but we are planning to support them, too.
+### Break and continue
+
+> This feature is currently [In preview](kotlin-evolution-principles.md#pre-stable-features).
+> We're planning to stabilize it in future releases.
+> To opt in, use the `-Xnon-local-break-continue` compiler option.
+> We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-1436).
 >
-{type="note"}
+{style="warning"}
+
+Similar to non-local `return`, you can apply `break` and `continue` [jump expressions](returns.md) in lambdas passed
+as arguments to an inline function that encloses a loop:
+
+```kotlin
+fun processList(elements: List<Int>): Boolean {
+    for (element in elements) {
+        val variable = element.nullableMethod() ?: run {
+            log.warning("Element is null or invalid, continuing...")
+            continue
+        }
+        if (variable == 0) return true
+    }
+    return false
+}
+```
 
 ## Reified type parameters
 
@@ -186,7 +209,7 @@ A type that does not have a run-time representation (for example, a non-reified 
 
 ## Inline properties
 
-The `inline` modifier can be used on accessors of properties that don't have backing fields.
+The `inline` modifier can be used on accessors of properties that don't have [backing fields](properties.md#backing-fields).
 You can annotate individual property accessors:
 
 ```kotlin

@@ -15,13 +15,13 @@ Currently, there are the following variants of the Kotlin Gradle plugin:
 
 | Variant's name | Corresponding Gradle versions |
 |----------------|-------------------------------|
-| `main`         | 6.8.3–6.9.2                   |
-| `gradle70`     | 7.0                           |
-| `gradle71`     | 7.1-7.4                       |
-| `gradle75`     | 7.5                           |
-| `gradle76`     | 7.6 and higher                |
+| `main`         | 7.6.0–7.6.3                   |
+| `gradle80`     | 8.0                           |
+| `gradle81`     | 8.1.1                         |
+| `gradle82`     | 8.2.1–8.4                     |
+| `gradle85`     | 8.5 and higher                |
 
-In future Kotlin releases, more variants will be probably added.
+In future Kotlin releases, more variants will be added.
 
 To check which variant your build uses, enable
 the [`--info` log level](https://docs.gradle.org/current/userguide/logging.html#sec:choosing_a_log_level) and find a
@@ -33,7 +33,7 @@ string in the output starting with `Using Kotlin Gradle plugin`, for example, `U
 > * [ResolutionStrategy in pluginManagement is not working for plugins with multivariants](https://github.com/gradle/gradle/issues/20545)
 > * [Plugin variants are ignored when a plugin is added as the `buildSrc` common dependency](https://github.com/gradle/gradle/issues/20847)
 >
-{type="note"}
+{style="note"}
 
 ### Gradle can't select a KGP variant in a custom configuration
 
@@ -44,8 +44,8 @@ If you use a custom Gradle configuration:
 <tab title="Kotlin" group-key="kotlin">
 
 ```kotlin
-configurations.register("customConfiguraton") {
-    ...
+configurations.register("customConfiguration") {
+    // ...
 }
 ```
 
@@ -53,15 +53,15 @@ configurations.register("customConfiguraton") {
 <tab title="Groovy" group-key="groovy">
 
 ```groovy
-configurations.register("customConfiguraton") {
-    ...
+configurations.register("customConfiguration") {
+    // ...
 }
 ```
 
 </tab>
 </tabs>
 
-and want to add a dependency on the Kotlin Gradle plugin, for example:
+And want to add a dependency on the Kotlin Gradle plugin, for example:
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -94,17 +94,17 @@ configurations {
     customConfiguration {
         attributes {
             attribute(
-                    Usage.USAGE_ATTRIBUTE,
-                    project.objects.named(Usage.class, Usage.JAVA_RUNTIME)
+                Usage.USAGE_ATTRIBUTE,
+                project.objects.named(Usage.class, Usage.JAVA_RUNTIME)
             )
             attribute(
-                    Category.CATEGORY_ATTRIBUTE,
-                    project.objects.named(Category.class, Category.LIBRARY)
+                Category.CATEGORY_ATTRIBUTE,
+                project.objects.named(Category.class, Category.LIBRARY)
             )
             // If you want to depend on a specific KGP variant:
             attribute(
-                 GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
-                 project.objects.named("7.0")
+                GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+                project.objects.named("7.0")
             )
         }
     }
@@ -119,17 +119,17 @@ configurations {
     customConfiguration {
         attributes {
             attribute(
-                    Usage.USAGE_ATTRIBUTE,
-                    project.objects.named(Usage, Usage.JAVA_RUNTIME)
+                Usage.USAGE_ATTRIBUTE,
+                project.objects.named(Usage, Usage.JAVA_RUNTIME)
             )
             attribute(
-                    Category.CATEGORY_ATTRIBUTE,
-                    project.objects.named(Category, Category.LIBRARY)
+                Category.CATEGORY_ATTRIBUTE,
+                project.objects.named(Category, Category.LIBRARY)
             )
             // If you want to depend on a specific KGP variant:
             attribute(
-                    GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
-                    project.objects.named('7.0')
+                GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+                project.objects.named('7.0')
             )
         }
     }
@@ -141,8 +141,8 @@ configurations {
 
 Otherwise, you will receive an error similar to this:
 
-```
- > Could not resolve all files for configuration ':customConfiguraton'.
+```none
+ > Could not resolve all files for configuration ':customConfiguration'.
       > Could not resolve org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0.
         Required by:
             project :
@@ -156,4 +156,4 @@ Otherwise, you will receive an error similar to this:
 
 ## What's next?
 
-Learn more about [Gradle basics and specifics](https://docs.gradle.org/current/userguide/getting_started.html).
+Learn more about [Gradle basics and specifics](https://docs.gradle.org/current/userguide/userguide.html).

@@ -17,19 +17,13 @@ object ApiReferencesTemplateTest: BuildType({
     root(vcsRoots.KotlinLangOrg)
   }
 
-  triggers {
-    vcs {
-      branchFilter = "+:pull/*"
-    }
-  }
-
   steps {
     script {
       scriptContent = """
         yarn install --frozen-lockfile
         yarn build:production
       """.trimIndent()
-      dockerImage = "node:14-alpine"
+      dockerImage = "node:16-alpine"
     }
     script {
       scriptContent = "./scripts/dokka/up.sh"
@@ -45,7 +39,7 @@ object ApiReferencesTemplateTest: BuildType({
 
   requirements {
     exists("docker.server.version")
-    contains("docker.server.osType", "linux")
+    doesNotContain("docker.server.osType", "windows")
   }
 
   features {

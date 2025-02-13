@@ -8,7 +8,7 @@ For each target, default compilations include:
 * `main` and `test` compilations for JVM, JS, and Native targets.
 * A [compilation](#compilation-for-android) per [Android build variant](https://developer.android.com/studio/build/build-variants), for Android targets.
 
-![Compilations](compilations.png)
+![Compilations](compilations.svg)
 
 If you need to compile something other than production code and unit tests, for example, integration or performance tests, 
 you can [create a custom compilation](#create-a-custom-compilation).
@@ -24,17 +24,32 @@ available for all or specific targets.
 
 ## Configure all compilations
 
+This example configures a compiler option that is common across all targets:
+
+<tabs group="build-script">
+<tab title="Kotlin" group-key="kotlin">
+
 ```kotlin
 kotlin {
-    targets.all {
-        compilations.all {
-            compilerOptions.configure {
-                allWarningsAsErrors.set(true)
-            }
-        }
+    compilerOptions {
+        allWarningsAsErrors.set(true)
     }
 }
 ```
+
+</tab>
+<tab title="Groovy" group-key="groovy">
+
+```groovy
+kotlin {
+    compilerOptions {
+        allWarningsAsErrors = true
+    }
+}
+```
+
+</tab>
+</tabs>
 
 ## Configure compilations for one target
 
@@ -43,10 +58,9 @@ kotlin {
 
 ```kotlin
 kotlin {
-    targets.jvm.compilations.all {
-        compilerOptions.configure {
-            sourceMap.set(true)
-            metaInfo.set(true)
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
 }
@@ -57,10 +71,9 @@ kotlin {
 
 ```groovy
 kotlin {
-    jvm().compilations.all {
-        compilerOptions.configure {
-            sourceMap.set(true)
-            metaInfo.set(true)
+    jvm {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 }
@@ -78,8 +91,10 @@ kotlin {
 kotlin {
     jvm {
         val main by compilations.getting {
-            compilerOptions.configure {
-                jvmTarget.set(JvmTarget.JVM_1_8)
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_1_8)
+                }
             }
         }
     }
@@ -91,9 +106,13 @@ kotlin {
 
 ```groovy
 kotlin {
-    jvm().compilations.main {
-        compilerOptions.configure {
-            jvmTarget.set(JvmTarget.JVM_1_8)
+    jvm {
+        compilations.main {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget = JvmTarget.JVM_1_8
+                }
+            }
         }
     }
 }
@@ -113,7 +132,7 @@ collection.
 > For custom compilations, you need to set up all dependencies manually. The default source set of a custom compilation 
 > does not depend on the `commonMain` and the `commonTest` source sets.
 >
-{type="note"}
+{style="note"}
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -188,7 +207,7 @@ JVM versions in your final artifact, or you have already set up source sets in G
 
 ## Use Java sources in JVM compilations
 
-When [creating a project with the Project Wizard](multiplatform-library.md), Java sources are included in the compilations of
+When creating a project with the [project wizard](https://kmp.jetbrains.com/), Java sources are included in the compilations of
 the JVM target.
 
 In the build script, the following section applies the Gradle `java` plugin and configures the target to cooperate with it:
@@ -220,14 +239,15 @@ The publication of this target is handled by the Kotlin plugin and doesn't requi
 Kotlin provides [interoperability with native languages](native-c-interop.md) and DSL to configure this for a specific 
 compilation.
 
-| Native language | Supported platforms | Comments |
-|-----------------|---------------------|----------|
-| C | All platforms, except for WebAssembly | |
-| Objective-C | Apple platforms (macOS, iOS, watchOS, tvOS) | |
+| Native language       | Supported platforms                         | Comments                                                                  |
+|-----------------------|---------------------------------------------|---------------------------------------------------------------------------|
+| C                     | All platforms, except for WebAssembly       |                                                                           |
+| Objective-C           | Apple platforms (macOS, iOS, watchOS, tvOS) |                                                                           |
 | Swift via Objective-C | Apple platforms (macOS, iOS, watchOS, tvOS) | Kotlin can use only Swift declarations marked with the `@objc` attribute. |
 
-A compilation can interact with several native libraries. Configure interoperability in the `cinterops` block of the 
-compilation with [available parameters](multiplatform-dsl-reference.md#cinterops).
+A compilation can interact with several native libraries. Configure interoperability with available properties in the
+[definition file](native-definition-file.md) or in the [`cinterops` block](multiplatform-dsl-reference.md#cinterops) of
+your build file:
 
 <tabs group="build-script">
 <tab title="Kotlin" group-key="kotlin">
@@ -239,7 +259,7 @@ kotlin {
             val myInterop by cinterops.creating {
                 // Def-file describing the native API.
                 // The default path is src/nativeInterop/cinterop/<interop-name>.def
-                defFile(project.file("def-file.def"))
+                definitionFile.set(project.file("def-file.def"))
                 
                 // Package to place the Kotlin API generated.
                 packageName("org.sample")
@@ -277,7 +297,7 @@ kotlin {
                 myInterop {
                     // Def-file describing the native API.
                     // The default path is src/nativeInterop/cinterop/<interop-name>.def
-                    defFile project.file("def-file.def")
+                    definitionFile = project.file("def-file.def")
                     
                     // Package to place the Kotlin API generated.
                     packageName 'org.sample'
@@ -313,19 +333,19 @@ for each build variant, a Kotlin compilation is created under the same name.
 
 Then, for each [Android source set](https://developer.android.com/studio/build/build-variants#sourcesets) compiled for 
 each of the variants, a Kotlin source set is created under that source set name prepended by the target name, like the 
-Kotlin source set `androidDebug` for an Android source set `debug` and the Kotlin target named `android`. These Kotlin 
-source sets are added to the variants' compilations accordingly.
+Kotlin source set `androidDebug` for an Android source set `debug` and the Kotlin target named `androidTarget`.
+These Kotlin source sets are added to the variants' compilations accordingly.
 
 The default source set `commonMain` is added to each production (application or library) variant's compilation. 
 The `commonTest` source set is similarly added to the compilations of unit test and instrumented test variants.
 
 Annotation processing with [`kapt`](kapt.md) is also supported, but due to current limitations it requires that the Android target 
-is created before the `kapt` dependencies are configured, which needs to be done in a top-level `dependencies` block rather 
+is created before the `kapt` dependencies are configured, which needs to be done in a top-level `dependencies {}` block rather 
 than within Kotlin source set dependencies.
 
 ```kotlin
 kotlin {
-    android { /* ... */ }
+    androidTarget { /* ... */ }
 }
 
 dependencies {
@@ -337,7 +357,7 @@ dependencies {
 
 Kotlin can build a [source set hierarchy](multiplatform-share-on-platforms.md#share-code-on-similar-platforms) with the `dependsOn` relation.
 
-![Source set hierarchy](jvm-js-main.png){width=400}
+![Source set hierarchy](jvm-js-main.svg)
 
 If the source set `jvmMain` depends on a source set `commonMain` then:
 
@@ -345,7 +365,7 @@ If the source set `jvmMain` depends on a source set `commonMain` then:
 compiled into the same target binary form, such as JVM class files.
 * Sources of `jvmMain` 'see' the declarations of `commonMain`, including internal declarations, and also see the 
 [dependencies](multiplatform-add-dependencies.md) of `commonMain`, even those specified as `implementation` dependencies.
-* `jvmMain` can contain platform-specific implementations for the [expected declarations](multiplatform-connect-to-apis.md) 
+* `jvmMain` can contain platform-specific implementations for the [expected declarations](multiplatform-expect-actual.md) 
 of `commonMain`.
 * The resources of `commonMain` are always processed and copied along with the resources of `jvmMain`.
 * The [language settings](multiplatform-dsl-reference.md#language-settings) of `jvmMain` and `commonMain` should be consistent.
@@ -356,3 +376,30 @@ Language settings are checked for consistency in the following ways:
 bugfix features).
 * `jvmMain` should use all experimental annotations that `commonMain` uses.
 * `apiVersion`, bugfix language features, and `progressiveMode` can be set arbitrarily.
+
+## Configure Isolated Projects feature in Gradle
+
+> This feature is [Experimental](components-stability.md#stability-levels-explained) and is currently in a pre-alpha state with Gradle. 
+> Use it only with Gradle versions 8.10 or higher, and solely for evaluation purposes. The feature may be dropped or changed at any time.
+> We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-57279/Support-Gradle-Project-Isolation-Feature-for-Kotlin-Multiplatform). 
+> Opt-in is required (see details below).
+> 
+{style="warning"}
+
+Gradle provides the [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html) feature,
+which improves build performance by "isolating" individual projects from each other. The feature separates the build scripts
+and plugins between projects, allowing them to run safely in parallel.
+
+To enable this feature, follow Gradle's instructions to [set the system property](https://docs.gradle.org/current/userguide/isolated_projects.html#how_do_i_use_it).
+
+If you want to check compatibility before enabling Isolated Projects in Gradle, you can test your projects with the new 
+Kotlin Gradle plugin model. Add the following Gradle property to your `gradle.properties` file:
+
+```none
+kotlin.kmp.isolated-projects.support=enable
+```
+
+If you decide to enable the Isolated Projects feature later, remember to remove this Gradle property. The Kotlin Gradle plugin
+applies and manages this Gradle property directly.
+
+For more information about the Isolated Projects feature, see [Gradle's documentation](https://docs.gradle.org/current/userguide/isolated_projects.html).

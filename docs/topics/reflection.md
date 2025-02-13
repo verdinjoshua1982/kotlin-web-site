@@ -6,7 +6,7 @@ the type of a property or function at runtime) is essential when using a functio
 
 > Kotlin/JS provides limited support for reflection features. [Learn more about reflection in Kotlin/JS](js-reflection.md).
 >
-{type="note"}
+{style="note"}
 
 ## JVM dependency
 
@@ -23,7 +23,7 @@ To use reflection in a Gradle or Maven project, add the dependency on `kotlin-re
 
     ```kotlin
     dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-reflect:%kotlinVersion%")
+        implementation(kotlin("reflect"))
     }
     ```
 
@@ -69,7 +69,7 @@ The reference is a [KClass](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.
 >On JVM: a Kotlin class reference is not the same as a Java class reference. To obtain a Java class reference,
 >use the `.java` property on a `KClass` instance.
 >
-{type="note"}
+{style="note"}
 
 ### Bound class references
 
@@ -197,11 +197,11 @@ fun main() {
 }
 ```
 
-The expression `::x` evaluates to a `KProperty<Int>` type property object. You can read its
+The expression `::x` evaluates to a `KProperty0<Int>` type property object. You can read its
 value using `get()` or retrieve the property name using the `name` property. For more information, see
 the [docs on the `KProperty` class](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-property/index.html).
 
-For a mutable property such as `var y = 1`, `::y` returns a value with the [`KMutableProperty<Int>`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-mutable-property/index.html) type
+For a mutable property such as `var y = 1`, `::y` returns a value with the [`KMutableProperty0<Int>`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-mutable-property/index.html) type
 which has a `set()` method:
 
 ```kotlin

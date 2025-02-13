@@ -7,71 +7,70 @@ To get started, first download and install the latest version of [IntelliJ IDEA]
 ## Create a project
 
 1. In IntelliJ IDEA, select **File** | **New** | **Project**.
-2. In the panel on the left, select **New Project**.
+2. In the list on the left, select **Kotlin**.
 3. Name the new project and change its location if necessary.
 
    > Select the **Create Git repository** checkbox to place the new project under version control. You will be able to do
    > it later at any time.
    >
-   {type="tip"}
-
-4. From the **Language** list, select **Kotlin**.
+   {style="tip"}
    
    ![Create a console application](jvm-new-project.png){width=700}
 
-5. Select the **IntelliJ** build system. It's a native builder that doesn't require downloading additional artifacts.
+4. Select the **IntelliJ** build system. It's a native builder that doesn't require downloading additional artifacts.
 
    If you want to create a more complex project that needs further configuration, select Maven or Gradle. For Gradle,
    choose a language for the build script: Kotlin or Groovy.
-6. From the **JDK list**, select the [JDK](https://www.oracle.com/java/technologies/downloads/) that you want to use in
+5. From the **JDK list**, select the [JDK](https://www.oracle.com/java/technologies/downloads/) that you want to use in
    your project.
    * If the JDK is installed on your computer, but not defined in the IDE, select **Add JDK** and specify the path to the
    JDK home directory. 
    * If you don't have the necessary JDK on your computer, select **Download JDK**.
 
-7. Enable the **Add sample code** option to create a file with a sample `"Hello World!"` application.
-8. Click **Create**.
+6. Enable the **Add sample code** option to create a file with a sample `"Hello World!"` application.
 
-  > If you chose the Gradle build system, you have in your project a build script file: `build.gradle(.kts)`. It includes 
-  > the `kotlin("jvm")` plugin and dependencies required for your console application. Make sure that you use the latest 
-  > version of the plugin:
-  > 
-  > ```kotlin
-  > plugins {
-  >     kotlin("jvm") version "%kotlinVersion%"
-  >     application
-  > }
-  > ```
-  >{type="note"}
+    > You can also enable the **Generate code with onboarding tips** option to add some additional useful comments to your
+    > sample code.
+    >
+    {style="tip"}
+
+7. Click **Create**.
+
+    > If you chose the Gradle build system, you have in your project a build script file: `build.gradle(.kts)`. It includes 
+    > the `kotlin("jvm")` plugin and dependencies required for your console application. Make sure that you use the latest 
+    > version of the plugin:
+    > 
+    > ```kotlin
+    > plugins {
+    >     kotlin("jvm") version "%kotlinVersion%"
+    >     application
+    > }
+    > ```
+    > 
+    {style="note"}
 
 ## Create an application
 
 1. Open the `Main.kt` file in `src/main/kotlin`.  
    The `src` directory contains Kotlin source files and resources. The `Main.kt` file contains sample code that will print 
-   `Hello World!`.
+   `Hello, Kotlin!` as well as several lines with values of the cycle iterator.
 
    ![Main.kt with main fun](jvm-main-kt-initial.png){width=700}
 
-2. Modify the code so that it requests your name and says `Hello` to you alone, and not to the whole world:
-   
-   * Introduce a local variable `name` with the keyword `val`. It will get its value from an input where you will enter your name – [`readln()`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/readln.html).
-     
-     > The readln() function is available since [Kotlin 1.6.0](whatsnew16.md#new-readline-functions).  
-     > Ensure that you have installed the latest version of the [Kotlin plugin](releases.md).
-     > 
-     {type="note"}
+2. Modify the code so that it requests your name and says `Hello` to you:
 
-   * Use a string template by adding a dollar sign `$` before this variable name directly in the text output like this – `$name`.
+   * Create an input prompt and assign to the `name` variable the value returned by the [`readln()`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/readln.html) function.
+   * Let's use a string template instead of concatenation by adding a dollar sign `$` before the variable name directly in the text output like this – `$name`.
    
    ```kotlin
    fun main() {
        println("What's your name?")
        val name = readln()
        println("Hello, $name!")
+   
+       // ...
    }
    ```
-
-   ![Updated main fun](jvm-main-kt-updated.png){width=350}
 
 ## Run the application
 
@@ -94,5 +93,5 @@ Congratulations! You have just run your first Kotlin application.
 Once you've created this application, you can start to dive deeper into Kotlin syntax:
 
 * Add sample code from [Kotlin examples](https://play.kotlinlang.org/byExample/overview) 
-* Install the [EduTools plugin](https://plugins.jetbrains.com/plugin/10081-edutools) for IDEA and complete exercises 
-from the [Kotlin Koans course](https://plugins.jetbrains.com/plugin/10081-edutools/docs/learner-start-guide.html?section=Kotlin%20Koans)
+* Install the [JetBrains Academy plugin](https://plugins.jetbrains.com/plugin/10081-jetbrains-academy) for IDEA and complete 
+  exercises from the [Kotlin Koans course](https://plugins.jetbrains.com/plugin/10081-jetbrains-academy/docs/learner-start-guide.html?section=Kotlin%20Koans)

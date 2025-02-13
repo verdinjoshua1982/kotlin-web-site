@@ -1,30 +1,17 @@
 package builds.apiReferences.kotlinx.coroutines
 
+import BuildParams.KOTLINX_COROUTINES_ID
+import BuildParams.KOTLINX_COROUTINES_RELEASE_TAG
+import builds.apiReferences.BuildApiPages
 import builds.apiReferences.dependsOnDokkaTemplate
-import builds.apiReferences.templates.BuildApiReference
-import jetbrains.buildServer.configs.kotlin.BuildType
-import jetbrains.buildServer.configs.kotlin.triggers.vcs
+import builds.apiReferences.vcsRoots.KotlinxCoroutines
 
-object KotlinxCoroutinesBuildApiReference: BuildType({
-  name = "kotlinx.coroutines API reference"
-
-  templates(BuildApiReference)
-
-  params {
-    param("release.tag", BuildParams.KOTLINX_COROUTINES_RELEASE_TAG)
-  }
-
-  vcs {
-    root(builds.apiReferences.vcsRoots.KotlinxCoroutines)
-  }
-
-  triggers {
-    vcs {
-      branchFilter = "+:<default>"
-    }
-  }
-
-  dependencies {
-    dependsOnDokkaTemplate(KotlinxCoroutinesPrepareDokkaTemplates)
-  }
-})
+object KotlinxCoroutinesBuildApiReference : BuildApiPages(
+    apiId = KOTLINX_COROUTINES_ID, releaseTag = KOTLINX_COROUTINES_RELEASE_TAG, init = {
+        vcs {
+            root(KotlinxCoroutines)
+        }
+        dependencies {
+            dependsOnDokkaTemplate(KotlinxCoroutinesPrepareDokkaTemplates)
+        }
+    })

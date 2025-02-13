@@ -1,12 +1,12 @@
 [//]: # (title: What's new in Kotlin 1.6.20)
 
-_[Release date: 4 April 2022](releases.md#release-details)_
+_[Released: 4 April 2022](releases.md#release-details)_
 
 Kotlin 1.6.20 reveals previews of the future language features, makes the hierarchical structure the default for multiplatform projects, and brings evolutionary improvements to other components.
 
 You can also find a short overview of the changes in this video:
 
-<video href="8F19ds109-o" title="What's new in Kotlin 1.6.20"/>
+<video src="https://www.youtube.com/v/8F19ds109-o" title="What's new in Kotlin 1.6.20"/>
 
 ## Language
 
@@ -22,7 +22,7 @@ In Kotlin 1.6.20, you can try two new language features:
 > Use context receivers only in your toy projects.
 > We appreciate your feedback in [YouTrack](https://youtrack.jetbrains.com/issues/KT).
 >
-{type="warning"}
+{style="warning"}
 
 With Kotlin 1.6.20, you are no longer limited to having one receiver. If you need more, you can make functions, properties, and classes context-dependent (or _contextual_) by adding context receivers to their declaration. A contextual declaration does the following:
 
@@ -66,7 +66,7 @@ If you run into any problems, please [file a new issue](https://kotl.in/issue).
 > but migration steps may be required in the future.
 > We'll do our best to minimize any changes you have to make.
 >
-{type="warning"}
+{style="warning"}
 
 To provide better interoperability when extending generic Java classes and interfaces, Kotlin 1.6.20 allows you to mark a generic type parameter as definitely non-nullable on the use site with the new syntax `T & Any`.
 The syntactic form comes from a notation of [intersection types](https://en.wikipedia.org/wiki/Intersection_type) and is now limited to a type parameter with nullable upper bounds on the left side of `&` and non-nullable `Any` on the right side:
@@ -119,7 +119,7 @@ kotlin {
 </tab>
 </tabs>
 
-Learn more about definitely non-nullable types in [the KEEP](https://github.com/Kotlin/KEEP/blob/c72601cf35c1e95a541bb4b230edb474a6d1d1a8/proposals/definitely-non-nullable-types.md).
+Learn more about definitely non-nullable types in [the KEEP](https://github.com/Kotlin/KEEP/blob/master/proposals/definitely-non-nullable-types.md).
 
 ## Kotlin/JVM
 
@@ -165,7 +165,7 @@ For more information about default methods in the Java interop, see the [interop
 > It may be dropped or changed at any time. Opt-in is required (see details below), and you should use it only for evaluation purposes.
 > We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-46085).
 >
-{type="warning"}
+{style="warning"}
 
 We are continuing our work to [improve the new JVM IR backend compilation time](https://youtrack.jetbrains.com/issue/KT-46768).
 In Kotlin 1.6.20, we added the experimental JVM IR backend mode to compile all the files in a module in parallel.
@@ -185,7 +185,7 @@ If your project consists of lots of small modules and has a build parallelized b
 > * It doesn't work with [kapt](kapt.md) because kapt disables the IR backend
 > * It requires more JVM heap by design. The amount of heap is proportional to the number of threads
 >
-{type="note"}
+{style="note"}
 
 
 ### Support for callable references to functional interface constructors
@@ -194,7 +194,7 @@ If your project consists of lots of small modules and has a build parallelized b
 > It may be dropped or changed at any time. Opt-in is required (see details below), and you should use it only for evaluation purposes.
 > We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-47939).
 >
-{type="warning"}
+{style="warning"}
 
 Support for [callable references](reflection.md#callable-references) to functional interface constructors adds a source-compatible way to migrate from an interface with a constructor function to a [functional interface](fun-interfaces.md).
 
@@ -253,7 +253,7 @@ Kotlin/Native 1.6.20 marks continued development of its new components. We've ta
 > It may change incompatibly and require manual migration in the future.
 > We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-48525).
 >
-{type="note"}
+{style="note"}
 
 With Kotlin 1.6.20, you can try the Alpha version of the new Kotlin/Native memory manager.
 It eliminates the differences between the JVM and Native platforms to provide a consistent developer experience in multiplatform projects.
@@ -293,7 +293,7 @@ Learn more about [instantiation of annotation classes](annotations.md#instantiat
 > Concurrency interoperability with Swift async/await is [Experimental](components-stability.md). It may be dropped or changed at any time.
 > You should use it only for evaluation purposes. We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-47610).
 >
-{type="warning"}
+{style="warning"}
 
 We've continued working on the [experimental interop with Swift's async/await](whatsnew1530.md#experimental-interoperability-with-swift-5-5-async-await) (available since Swift 5.5).
 Kotlin 1.6.20 differs from previous versions in the way it works with `suspend` functions with the `Unit` return type.
@@ -314,7 +314,7 @@ We plan to make this behavior the default in future Kotlin releases.
 > Using libbacktrace for resolving source locations is [Experimental](components-stability.md). It may be dropped or changed at any time.
 > You should use it only for evaluation purposes. We would appreciate your feedback on it in [YouTrack](https://youtrack.jetbrains.com/issue/KT-48424).
 >
-{type="warning"}
+{style="warning"}
 
 Kotlin/Native is now able to produce detailed stack traces with file locations and line numbers
 for better debugging of `linux*` (except `linuxMips32` and `linuxMipsel32`) and `androidNative*` targets.
@@ -341,7 +341,7 @@ Uncaught Kotlin exception: kotlin.IllegalStateException:
    at 4   example.kexe        0x25d708       kfun:#bar(){} + 104
    at 5   example.kexe        0x25d68c       kfun:#main(){} + 12
 ```
-{initial-collapse-state="collapsed"}
+{initial-collapse-state="collapsed" collapsible="true"}
 
 * **1.6.20 with libbacktrace:**
 
@@ -356,7 +356,7 @@ Uncaught Kotlin exception: kotlin.IllegalStateException:
    at 6   example.kexe        0x25fac8    kfun:#bar(){} + 104 (/private/tmp/backtrace/src/commonMain/kotlin/app.kt:2:13)
    at 7   example.kexe        0x25fa4c    kfun:#main(){} + 12 (/private/tmp/backtrace/src/commonMain/kotlin/app.kt:1:14)
 ```
-{initial-collapse-state="collapsed"}
+{initial-collapse-state="collapsed" collapsible="true"}
 
 On Apple targets, which already had file locations and line numbers in stack traces, libbacktrace provides more details for inline function calls:
 
@@ -372,7 +372,7 @@ Uncaught Kotlin exception: kotlin.IllegalStateException:
    at 5   example.kexe    0x10a84891c    kfun:#main(){} + 12 (/private/tmp/backtrace/src/commonMain/kotlin/app.kt:1:14)
 ...
 ```
-{initial-collapse-state="collapsed"}
+{initial-collapse-state="collapsed" collapsible="true"}
 
 
 * **1.6.20 with libbacktrace:**
@@ -389,7 +389,7 @@ Uncaught Kotlin exception: kotlin.IllegalStateException:
    at 7   example.kexe    0x106689cac    kfun:#main(){} + 12 (/private/tmp/backtrace/src/commonMain/kotlin/app.kt:1:14)
 ...
 ```
-{initial-collapse-state="collapsed"}
+{initial-collapse-state="collapsed" collapsible="true"}
 
 To produce better stack traces with libbacktrace, add the following line to `gradle.properties`:
 
@@ -477,12 +477,11 @@ It also helps prevent unsafe API usages meant for a different target.
 The technology will come in handy for [library authors](#more-opportunities-for-library-authors), too, as a hierarchical project structure allows them to publish and consume libraries with common APIs for a subset of targets.
 
 By default, libraries published with the hierarchical project structure are compatible only with hierarchical structure projects.
-Learn more about [project-library compatibility](multiplatform-hierarchy.md#compatibility).
 
 #### Better code-sharing in your project
 
 Without hierarchical structure support, there is no straightforward way to share code across _some_ but not _all_ [Kotlin targets](multiplatform-dsl-reference.md#targets).
-One popular example is sharing code across all iOS targets and having access to iOS-specific [dependencies](multiplatform-share-on-platforms.md#use-native-libraries-in-the-hierarchical-structure), like `Foundation`.
+One popular example is sharing code across all iOS targets and having access to iOS-specific [dependencies](multiplatform-share-on-platforms.md#connect-platform-specific-libraries), like Foundation.
 
 Thanks to the hierarchical project structure support, you can now achieve this out of the box.
 In the new structure, source sets form a hierarchy.
@@ -517,7 +516,7 @@ Starting with Kotlin 1.6.20, all your new multiplatform projects will have a hie
 
 * For Kotlin 1.6.20, we recommend using [Android Studio 2021.1.1](https://developer.android.com/studio) (Bumblebee) or later to get the best experience.
 
-* You can also opt-out. To disable hierarchical structure support, set the following options in` gradle.properties`:
+* You can also opt out. To disable hierarchical structure support, set the following options in `gradle.properties`:
 
   ```none
   # gradle.properties
@@ -693,7 +692,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile).configureEach {
 
 > The feature was backported to Kotlin 1.6.10.
 >
-{type="note"}
+{style="note"}
 
 The Kotlin/JS Gradle plugin now provides an ability to persist the `yarn.lock` file, making it possible to lock the versions of the npm dependencies for your project without additional Gradle configuration.
 The feature brings changes to the default project structure by adding the auto-generated `kotlin-js-store` directory to the project root.
@@ -734,13 +733,13 @@ rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlu
 
 > Changing the name of the lockfile may cause dependency inspection tools to no longer pick up the file.
 > 
-{type="warning"}
+{style="warning"}
 
 ### Installation of npm dependencies with --ignore-scripts by default
 
 > The feature was backported to Kotlin 1.6.10.
 >
-{type="note"}
+{style="note"}
 
 The Kotlin/JS Gradle plugin now prevents the execution of [lifecycle scripts](https://docs.npmjs.com/cli/v8/using-npm/scripts#life-cycle-scripts) during the installation of npm dependencies by default.
 The change is aimed at reducing the likelihood of executing malicious code from compromised npm packages.
@@ -838,7 +837,7 @@ Please leave your feedback in [this YouTrack task](https://youtrack.jetbrains.co
 In Kotlin 1.6.20, we changed deprecation levels of the properties:
 
 * We deprecated the ability to run [kapt](kapt.md) via the Kotlin daemon with `kapt.use.worker.api` – now it produces a warning to Gradle's output. 
-  By default, [kapt has been using Gradle workers](kapt.md#running-kapt-tasks-in-parallel) since the 1.3.70 release, and we recommend sticking to this method.
+  By default, [kapt has been using Gradle workers](kapt.md#run-kapt-tasks-in-parallel) since the 1.3.70 release, and we recommend sticking to this method.
 
   We are going to remove the option `kapt.use.worker.api` in future releases.
 

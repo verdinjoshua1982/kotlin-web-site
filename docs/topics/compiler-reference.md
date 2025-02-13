@@ -22,7 +22,7 @@ There are several ways to set the compiler options and their values (_compiler a
 * If you're using Gradle, specify the compiler arguments in the `compilerOptions` property of the Kotlin compilation task.
 For details, see [Gradle compiler options](gradle-compiler-options.md#how-to-define-options).
 * If you're using Maven, specify the compiler arguments in the `<configuration>` element of the Maven plugin node. 
-For details, see [Maven](maven.md#specifying-compiler-options).
+For details, see [Maven](maven.md#specify-compiler-options).
 * If you run a command-line compiler, add the compiler arguments directly to the utility call or write them into an [argfile](#argfile).
 
 For example: 
@@ -36,7 +36,7 @@ $ kotlinc hello.kt -include-runtime -d hello.jar
 >```
 >$ kotlinc.bat hello.kt -include-runtime -d "My Folder\hello.jar"
 >```
-{type="note"}
+{style="note"}
 
 ## Common options
 
@@ -53,6 +53,11 @@ Suppress the compiler from displaying warnings during compilation.
 ### -Werror
 
 Turn any warnings into a compilation error. 
+
+### -Wextra
+
+Enable [additional declaration, expression, and type compiler checks](whatsnew21.md#extra-compiler-checks) that
+emit warnings if true.
 
 ### -verbose
 
@@ -77,10 +82,10 @@ their names and behavior may be changed without notice.
 
 Specify a custom path to the Kotlin compiler used for the discovery of runtime libraries.
   
-### -P plugin:_pluginId_:_optionName_=_value_
+### -P plugin:pluginId:optionName=value
 
 Pass an option to a Kotlin compiler plugin.
-Available plugins and their options are listed in the **Tools > Compiler plugins** section of the documentation.
+Core plugins and their options are listed in the [Core compiler plugins](components-stability.md#core-compiler-plugins) section of the documentation.
   
 ### -language-version _version_
 
@@ -99,14 +104,13 @@ instead of going through a graceful migration cycle.
 Code written in the progressive mode is backwards compatible; however, code written in
 a non-progressive mode may cause compilation errors in the progressive mode.
 
-### @_argfile_
+### @argfile
 
 Read the compiler options from the given file. Such a file can contain compiler options with values 
 and paths to the source files. Options and paths should be separated by whitespaces. For example:
 
 ```
--include-runtime -d hello.jar
-hello.kt
+-include-runtime -d hello.jar hello.kt
 ```
 
 To pass values that contain whitespaces, surround them with single (**'**) or double (**"**) quotes. If a value contains 
@@ -131,6 +135,14 @@ $ kotlinc @options/compiler.options hello.kt
 
 Enable usages of API that [requires opt-in](opt-in-requirements.md) with a requirement annotation with the given 
 fully qualified name.
+
+### -Xsuppress-warning
+
+Suppresses specific warnings [globally across the whole project](whatsnew-eap.md), for example:
+
+```bash
+kotlinc -Xsuppress-warning=NOTHING_TO_INLINE -Xsuppress-warning=NO_TAIL_CALLS_FOUND main.kt
+```
 
 ## Kotlin/JVM compiler options
 
@@ -162,15 +174,15 @@ Use a custom JDK home directory to include into the classpath if it differs from
 
 Specify the target version of the generated JVM bytecode. Limit the API of the JDK in the classpath to the specified Java version. 
 Automatically sets [`-jvm-target version`](#jvm-target-version).
-Possible values are `1.8`, `9`, `10`, ..., `19`. The default value is `%defaultJvmTargetVersion%`.
+Possible values are `1.8`, `9`, `10`, ..., `21`.
 
 > This option is [not guaranteed](https://youtrack.jetbrains.com/issue/KT-29974) to be effective for each JDK distribution.
 >
-{type="note"}
+{style="note"}
 
 ### -jvm-target _version_
 
-Specify the target version of the generated JVM bytecode. Possible values are `1.8`, `9`, `10`, ..., `19`.
+Specify the target version of the generated JVM bytecode. Possible values are `1.8`, `9`, `10`, ..., `21`.
 The default value is `%defaultJvmTargetVersion%`.
 
 ### -java-parameters
@@ -257,6 +269,17 @@ Use the specified paths as base directories. Base directories are used for calcu
 
 Embed source files into the source map.
 
+### -source-map-names-policy _{simple-names|fully-qualified-names|no}_
+
+Add variable and function names that you declared in Kotlin code into the source map.
+
+| Setting | Description | Example output |
+|---|---|---|
+| `simple-names` | Variable names and simple function names are added. (Default) | `main` |
+| `fully-qualified-names` | Variable names and fully qualified function names are added. | `com.example.kjs.playground.main` |
+| `no` | No variable or function names are added. | N/A |
+
+
 ### -source-map-prefix
 
 Add the specified prefix to paths in the source map.
@@ -274,15 +297,12 @@ Enable runtime assertions in the generated code.
 
 ### -g
 
-Enable emitting debug information.
+Enable emitting debug information. This option lowers the optimization level and should not be combined with
+the [`-opt`](#opt) option.
     
 ### -generate-test-runner (-tr)
 
 Produce an application for running unit tests from the project.
-
-### -generate-worker-test-runner (-trw)
-
-Produce an application for running unit tests in a [worker thread](native-immutability.md#concurrency-in-kotlin-native).
 
 ### -generate-no-exit-test-runner (-trn)
 
@@ -321,7 +341,7 @@ Include the native bitcode library.
 
 ### -no-default-libs
 
-Disable linking user code with the [default platform libraries](native-platform-libs.md) distributed with the compiler.
+Disable linking user code with the prebuilt [platform libraries](native-platform-libs.md) distributed with the compiler.
 
 ### -nomain
 
@@ -345,7 +365,8 @@ Don't link with stdlib.
 
 ### -opt
 
-Enable compilation optimizations.
+Enable compilation optimizations and produce a binary with better runtime performance. It's not recommended to combine it
+with the [`-g`](#g) option, which lowers the optimization level.
 
 ### -output _name_ (-o _name_)
 

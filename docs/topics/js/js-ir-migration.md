@@ -1,6 +1,6 @@
 [//]: # (title: Migrating Kotlin/JS projects to the IR compiler)
 
-We replaced the current Kotlin/JS compiler with [the IR-based compiler](js-ir-compiler.md) in order to unify
+We replaced the old Kotlin/JS compiler with [the IR-based compiler](js-ir-compiler.md) in order to unify
 Kotlin's behavior on all platforms and to make it possible to implement new JS-specific optimizations, among other reasons.
 You can learn more about the internal differences between the two compilers in the blog post
 [Migrating our Kotlin/JS app to the new IR compiler](https://dev.to/kotlin/migrating-our-kotlin-js-app-to-the-new-ir-compiler-3o6i)
@@ -12,7 +12,7 @@ may require adjusting your code. On this page, we've compiled a list of known mi
 > Install the [Kotlin/JS Inspection pack](https://plugins.jetbrains.com/plugin/17183-kotlin-js-inspection-pack/) plugin 
 > to get valuable tips on how to fix some of the issues that occur during migration.
 >
-{type="tip"}
+{style="tip"}
 
 Note that this guide may change over time as we fix issues and find new ones. Please help us keep it complete –
 report any issues you encounter when switching to the IR compiler by submitting them to our issue tracker [YouTrack](https://kotl.in/issue)

@@ -8,4 +8,7 @@ xmltodict==0.13.0
 geocoder==1.38
 ruamel.yaml==0.17.21
 algoliasearch==1.20.0
-Werkzeug==2.3.8
+Werkzeug==3.0.6
+requests>=2.32.4 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability

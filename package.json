@@ -71,7 +71,7 @@
     "react-swipeable-views": "0.14.0",
     "resolve-url-loader": "4.0.0",
     "rollup": "2.47.0",
-    "sha.js": "^2.4.11",
+    "sha.js": "^2.4.12",
     "svgo": "2.7.0",
     "svgo-loader": "3.0.0",
     "tslib": "2.2.0",

@@ -23,7 +23,7 @@
 
     <var name="serializationVersion" value="1.10.0"/>
 
-    <var name="dateTimeVersion" value="0.7.1"/>
+    <var name="dateTimeVersion" value="0.8.0"/>
 
     <var name="lincheckVersion" value="3.4"/>
 
